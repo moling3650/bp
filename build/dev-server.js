@@ -24,7 +24,7 @@ const proxyTable = config.dev.proxyTable
 const app = express()
 const apis = ['projects']
 
-apis.map(api => app.use('/api/' + api, require('../apis/' + api + '.js')))
+apis.map(api => app.use(`/api/${api}`, require(`../apis/${api}.js`)))
 
 const compiler = webpack(webpackConfig)
 
