@@ -6,11 +6,13 @@
 
 <script>
   import projectsForm from '@/components/form/projectsForm'
+  import buildingsForm from '@/components/form/buildingsForm'
 
   export default {
     name: 'Editor',
     components: {
-      projectsForm
+      projectsForm,
+      buildingsForm
     },
     data () {
       return {

@@ -1,38 +1,37 @@
 <template>
   <div class="projects-form">
-    <el-form ref="form" :model="form" label-width="100px">
-      <h1 class="title">{{ id ? '编辑' : '新建'}}项目表单</h1>
-      <el-form-item label="项目代码">
+    <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+      <el-form-item label="项目代码" prop="project_code">
         <el-input v-model="form.project_code"/>
       </el-form-item>
 
-      <el-form-item label="项目名称">
+      <el-form-item label="项目名称" prop="project_name">
         <el-input v-model="form.project_name"/>
       </el-form-item>
 
-      <el-form-item label="省份">
+      <el-form-item label="省份" prop="province">
         <el-input v-model="form.province"/>
       </el-form-item>
 
-      <el-form-item label="城市">
+      <el-form-item label="城市" prop="city">
         <el-input v-model="form.city"/>
       </el-form-item>
 
-      <el-form-item label="项目负责人">
+      <el-form-item label="项目负责人" prop="pm">
         <el-input v-model="form.pm"/>
       </el-form-item>
 
-      <el-form-item label="手机号码">
+      <el-form-item label="手机号码" prop="phone_no">
         <el-input v-model="form.phone_no"/>
       </el-form-item>
 
-      <el-form-item label="备注">
+      <el-form-item label="备注" prop="remark">
         <el-input type="textarea" v-model="form.remark"/>
       </el-form-item>
 
       <el-form-item>
         <el-button type="primary" @click="onSubmit">{{ id ? '保存' : '新建'}}</el-button>
-        <el-button>取消</el-button>
+        <el-button @click="$emit('close', false)">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -43,9 +42,16 @@
 
   export default {
     name: 'projectsForm',
+    props: {
+      type: {
+        type: String
+      },
+      id: {
+        type: [String, Number]
+      }
+    },
     data () {
       return {
-        id: parseInt(this.$route.params.id) || '',
         method: 'post',
         form: {
           project_code: '',
@@ -55,12 +61,26 @@
           pm: '',
           phone_no: '',
           remark: ''
+        },
+        rules: {
+          project_code: [{ required: true, message: '请输入项目代码', trigger: 'blur' }],
+          project_name: [{ required: true, message: '请输入项目名称', trigger: 'blur' }],
+          province: [{ required: true, message: '请输入省份', trigger: 'blur' }],
+          city: [{ required: true, message: '请输入城市', trigger: 'blur' }],
+          pm: [{ required: true, message: '请输入负责人', trigger: 'blur' }],
+          phone_no: [{ required: true, message: '请输入手机号', trigger: 'blur' }]
         }
       }
     },
+    watch: {
+      id: function (val, oldVal) {
+        this.$refs.form.resetFields()
+        val && this.init(val)
+      }
+    },
     methods: {
-      fetchProject (id) {
-        axios.get(`/api/projects/${id}`).then(res => {
+      fetchProject (projectId) {
+        axios.get(`/api/projects/${projectId}`).then(res => {
           if (res.data) {
             this.method = 'put'
             this.form = res.data
@@ -68,38 +88,36 @@
         }).catch(err => console.log(err))
       },
       onSubmit () {
-        axios({
-          url: `/api/projects/${this.id}`,
-          method: this.method,
-          data: this.form
-        }).then(res => {
-          if (!res.errno) {
-            this.$router.push({ name: 'Index' })
+        this.$refs.form.validate((valid) => {
+          if (valid) {
+            axios({
+              url: `/api/projects/${this.id}`,
+              method: this.method,
+              data: this.form
+            }).then(res => {
+              if (!res.errno) {
+                this.$emit('close', true)
+              } else {
+                console.log(res.sqlMessage)
+                this.$emit('close', false)
+              }
+            }).catch(err => console.log(err))
           } else {
-            console.log(res.sqlMessage)
+            console.log('error submit!!')
+            return false
           }
-        }).catch(err => console.log(err))
+        })
+      },
+      init (projectId) {
+        projectId && this.fetchProject(projectId)
       }
     },
     mounted () {
-      if (this.id) {
-        this.fetchProject(this.id)
-      }
+      this.init(this.id)
     }
   }
 </script>
 
 <style lang="css" scoped>
-  .projects-form {
-    width: 992px;
-    padding: 10px;
-    margin: 0 auto;
-  }
 
-  .title {
-    margin: 15px 0 10px 0;
-    font-size: 18px;
-    font-weight: bold;
-    text-align: center;
-  }
 </style>

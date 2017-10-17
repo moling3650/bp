@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Index from '@/components/Index'
-import Editor from '@/components/Editor'
+import Buildings from '@/components/Buildings'
 
 Vue.use(Router)
 
@@ -13,9 +13,9 @@ export default new Router({
       component: Index
     },
     {
-      path: '/editor/:type/:id',
-      name: 'Editor',
-      component: Editor
+      path: '/buildings',
+      name: 'Buildings',
+      component: Buildings
     }
   ]
 })
