@@ -2,7 +2,7 @@
   <div class="projects-form">
     <el-form ref="form" :model="form" :rules="rules" label-width="100px">
       <el-form-item label="项目代码" prop="project_code">
-        <el-input v-model="form.project_code"/>
+        <el-input v-model="form.project_code" :disabled="type !== 'create'"/>
       </el-form-item>
 
       <el-form-item label="项目名称" prop="project_name">
@@ -52,7 +52,6 @@
     },
     data () {
       return {
-        method: 'post',
         form: {
           project_code: '',
           project_name: '',
@@ -82,7 +81,6 @@
       fetchProject (projectId) {
         axios.get(`/api/projects/${projectId}`).then(res => {
           if (res.data) {
-            this.method = 'put'
             this.form = res.data
           }
         }).catch(err => console.log(err))
@@ -92,15 +90,12 @@
           if (valid) {
             axios({
               url: `/api/projects/${this.id}`,
-              method: this.method,
+              method: this.type === 'create' ? 'post' : 'put',
               data: this.form
             }).then(res => {
-              if (!res.errno) {
-                this.$emit('close', true)
-              } else {
-                console.log(res.sqlMessage)
-                this.$emit('close', false)
-              }
+              this.$refs.form.resetFields()
+              res.errno && console.log(res.sqlMessage)
+              this.$emit('close', !res.errno)
             }).catch(err => console.log(err))
           } else {
             console.log('error submit!!')
@@ -119,5 +114,4 @@
 </script>
 
 <style lang="css" scoped>
-
 </style>

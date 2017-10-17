@@ -1,5 +1,5 @@
 <template>
-  <div class="buildings-form">
+  <div class="uppers-form">
     <el-form ref="form" :model="form" :rules="rules" label-width="100px">
       <el-form-item label="建筑代码" prop="building_code">
         <el-input v-model="form.building_code" :disabled="type !== 'create'"/>
@@ -47,7 +47,7 @@
   import axios from 'axios'
 
   export default {
-    name: 'buildingsForm',
+    name: 'uppersForm',
     props: {
       type: {
         type: String
@@ -92,7 +92,7 @@
         }).catch(err => console.log(err))
       },
       fetchBuilding (id) {
-        axios.get(`/api/buildings/${id}`).then(res => {
+        axios.get(`/api/uppers/${id}`).then(res => {
           if (res.data) {
             this.form = res.data
           }
@@ -102,7 +102,7 @@
         this.$refs.form.validate((valid) => {
           if (valid) {
             axios({
-              url: `/api/buildings/${this.id}`,
+              url: `/api/uppers/${this.id}`,
               method: this.type === 'create' ? 'post' : 'put',
               data: this.form
             }).then(res => {
