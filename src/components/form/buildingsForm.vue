@@ -9,7 +9,7 @@
         <el-input v-model="form.building_name"/>
       </el-form-item>
 
-      <el-form-item label="项目名称" prop="type">
+      <el-form-item label="项目名称" prop="project_code">
         <el-select v-model="form.project_code" placeholder="请选择项目">
           <el-option
             v-for="project in projects"

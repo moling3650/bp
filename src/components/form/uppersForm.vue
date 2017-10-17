@@ -1,15 +1,15 @@
 <template>
   <div class="uppers-form">
     <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-      <el-form-item label="建筑代码" prop="building_code">
-        <el-input v-model="form.building_code" :disabled="type !== 'create'"/>
+      <el-form-item label="上位机代码" prop="upper_code">
+        <el-input v-model="form.upper_code" :disabled="type !== 'create'"/>
       </el-form-item>
 
-      <el-form-item label="建筑名称" prop="building_name">
-        <el-input v-model="form.building_name"/>
+      <el-form-item label="上位机名称" prop="upper_name">
+        <el-input v-model="form.upper_name"/>
       </el-form-item>
 
-      <el-form-item label="项目名称" prop="type">
+      <el-form-item label="选择项目" prop="project_code">
         <el-select v-model="form.project_code" placeholder="请选择项目">
           <el-option
             v-for="project in projects"
@@ -20,15 +20,8 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="建筑类型" prop="type">
-        <el-select v-model="form.type" placeholder="请选择建筑类型">
-          <el-option
-            v-for="(item, index) in ['楼塔', '桥梁', '隧道', '堤坝']"
-            :key="index"
-            :label="item"
-            :value="index + 1">
-          </el-option>
-        </el-select>
+      <el-form-item label="状态" prop="state">
+        <el-switch v-model="form.state" :on-value="1" :off-value="0"/>
       </el-form-item>
 
       <el-form-item label="备注" prop="remark">
@@ -60,16 +53,16 @@
       return {
         projects: [],
         form: {
-          building_code: '',
-          building_name: '',
+          upper_code: '',
+          upper_name: '',
           project_code: '',
-          type: 1,
+          state: 0,
           remark: ''
         },
         rules: {
-          building_code: [{ required: true, message: '请输入建筑代码', trigger: 'blur' }],
-          building_name: [{ required: true, message: '请输入建筑名称', trigger: 'blur' }],
-          type: [{ required: true, type: 'number', message: '请选择建筑类型', trigger: 'change' }],
+          upper_code: [{ required: true, message: '请输入上位机代码', trigger: 'blur' }],
+          upper_name: [{ required: true, message: '请输入上位机名称', trigger: 'blur' }],
+          state: [{ required: true, type: 'number', message: '请选择类型', trigger: 'blur' }],
           project_code: [{ required: true, message: '请选择项目', trigger: 'change' }]
         }
       }
@@ -91,7 +84,7 @@
           }
         }).catch(err => console.log(err))
       },
-      fetchBuilding (id) {
+      fetchUpper (id) {
         axios.get(`/api/uppers/${id}`).then(res => {
           if (res.data) {
             this.form = res.data
@@ -116,9 +109,9 @@
           }
         })
       },
-      init (buildingId) {
+      init (upperId) {
         this.fetchProjects()
-        buildingId && this.fetchBuilding(buildingId)
+        upperId && this.fetchUpper(upperId)
       }
     },
     mounted () {

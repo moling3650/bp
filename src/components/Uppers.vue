@@ -7,10 +7,10 @@
     </p>
 
     <el-table :data="tableData" border style="width: 100%">
-      <el-table-column align="center" label="上位机代码" prop="building_code"/>
-      <el-table-column align="center" label="上位机名称" prop="building_name"/>
+      <el-table-column align="center" label="上位机代码" prop="upper_code"/>
+      <el-table-column align="center" label="上位机名称" prop="upper_name"/>
       <el-table-column align="center" label="所属项目" prop="project_code"/>
-      <el-table-column align="center" label="上位机类型" prop="type" :formatter="fmtType"/>
+      <el-table-column align="center" label="状态" prop="state" :formatter="fmtState"/>
       <el-table-column align="center" label="创建时间" prop="create_date" :formatter="fmtDate"/>
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
@@ -62,8 +62,8 @@
       fmtDate (row, column, dateStr) {
         return dateStr ? dateStr.replace(/(\d{4}-\d{2}-\d{2}).*?(\d{2}:\d{2}).*/, '$1 $2') : ''
       },
-      fmtType (row, column, type) {
-        return ['楼塔', '桥梁', '隧道', '堤坝'][type - 1]
+      fmtState (row, column, state) {
+        return state ? '有效' : '无效'
       },
       handleDelete (id) {
         this.$confirm('此操作将永久删除该上位机, 是否继续?', '提示', {
