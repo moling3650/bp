@@ -39,7 +39,7 @@ CREATE TABLE B_Building (
 DROP TABLE IF EXISTS B_Building_Unit;
 CREATE TABLE B_Building_Unit (
     id int not null auto_increment comment '主键',
-    unit_nmae varchar(255) not null comment '单元名称',
+    unit_name varchar(255) not null comment '单元名称',
     building_code varchar(255) not null comment '所属建筑',
     create_date datetime not null default current_timestamp comment '创建时间',
     remark varchar(255) default null comment '备注',

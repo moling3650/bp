@@ -22,7 +22,7 @@ const autoOpenBrowser = !!config.dev.autoOpenBrowser
 const proxyTable = config.dev.proxyTable
 
 const app = express()
-const apis = ['projects', 'buildings', 'uppers']
+const apis = ['projects', 'buildings', 'uppers', 'buildingunits']
 
 apis.map(api => app.use(`/api/${api}`, require(`../apis/${api}.js`)))
 
