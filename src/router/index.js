@@ -4,6 +4,7 @@ import Index from '@/components/Index'
 import Buildings from '@/components/Buildings'
 import BuildingUnits from '@/components/BuildingUnits'
 import Uppers from '@/components/Uppers'
+import Monitors from '@/components/Monitors'
 
 Vue.use(Router)
 
@@ -28,6 +29,11 @@ export default new Router({
       path: '/uppers',
       name: 'Uppers',
       component: Uppers
+    },
+    {
+      path: '/monitors',
+      name: 'Monitors',
+      component: Monitors
     }
   ]
 })

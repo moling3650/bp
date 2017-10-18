@@ -5,6 +5,7 @@
       <el-menu-item index="/buildings">建筑管理</el-menu-item>
       <el-menu-item index="/buildingunits">建筑单元管理</el-menu-item>
       <el-menu-item index="/uppers">上位机管理</el-menu-item>
+      <el-menu-item index="/monitors">LORA管理</el-menu-item>
     </el-menu>
     <router-view/>
   </div>

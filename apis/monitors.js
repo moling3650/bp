@@ -7,13 +7,13 @@ const router = express.Router()
 
 router.use(bodyParser.json())
 
-router.param(['id', 'code'], function (req, res, next) {
+router.param('id', function (req, res, next) {
   next()
 })
 
 router.get('/', (req, res) => {
   const connection = mysql.createConnection(dbConfig)
-  const sql = 'SELECT id,project_code,project_name,province,city,pm,phone_no,create_date,remark FROM B_Project'
+  const sql = 'SELECT id,monitor_code,monitor_name,project_code,building_code,port_name,baud_rate,stop_bit,parity_check,channel_count,create_date,remark FROM B_Monitor'
   connection.query(sql, function (err, result) {
     res.json(err ? err : result)
   })
@@ -23,10 +23,10 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
   const id = parseInt(req.params.id)
   if (!id) {
-    return res.send('project ID must be integer')
+    return res.send('ID must be integer')
   }
   const connection = mysql.createConnection(dbConfig)
-  const sql = 'SELECT id,project_code,project_name,province,city,pm,phone_no,create_date,remark FROM B_Project WHERE id=?'
+  const sql = 'SELECT id,monitor_code,monitor_name,project_code,building_code,port_name,baud_rate,stop_bit,parity_check,channel_count,create_date,remark FROM B_Monitor WHERE id=?'
   connection.query(sql, [id], function (err, result) {
     res.json(err ? err : result[0])
   })
@@ -35,7 +35,7 @@ router.get('/:id', (req, res) => {
 
 router.post('/', (req, res) => {
   const keys = Object.keys(req.body)
-  const sql = `INSERT INTO B_Project(${keys.join(',')}) VALUES(${keys.map(key => '?').join(',')})`
+  const sql = `INSERT INTO B_Monitor(${keys.join(',')}) VALUES(${keys.map(key => '?').join(',')})`
   const sqlParams = keys.map(key => req.body[key])
   console.log(sql)
   console.log(sqlParams)
@@ -50,11 +50,11 @@ router.post('/', (req, res) => {
 router.put('/:id', (req, res) => {
   const id = parseInt(req.params.id)
   if (!id) {
-    return res.send('project ID must be integer')
+    return res.send('ID must be integer')
   }
 
   const keys = Object.keys(req.body).filter(key => key !== 'id' && key !== 'create_date')
-  const sql = `UPDATE B_Project SET ${keys.map(key => `\`${key}\`=?`).join(',')} WHERE Id=?`
+  const sql = `UPDATE B_Monitor SET ${keys.map(key => `\`${key}\`=?`).join(',')} WHERE Id=?`
   const sqlParams = keys.map(key => req.body[key])
   sqlParams.push(id)
 
@@ -71,21 +71,11 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
   const id = parseInt(req.params.id)
   if (!id) {
-    return res.send('project ID must be integer')
+    return res.send('ID must be integer')
   }
   const connection = mysql.createConnection(dbConfig)
-  const sql = 'DELETE FROM B_Project WHERE id=?'
+  const sql = 'DELETE FROM B_Monitor WHERE id=?'
   connection.query(sql, [id], function (err, result) {
-    res.json(err ? err : result)
-  })
-  connection.end()
-})
-
-router.get('/:code/buildings', (req, res) => {
-  const code = req.params.code
-  const connection = mysql.createConnection(dbConfig)
-  const sql = 'SELECT building_code AS value,building_name AS label FROM B_Building WHERE project_code=?'
-  connection.query(sql, [code], function (err, result) {
     res.json(err ? err : result)
   })
   connection.end()
