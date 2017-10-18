@@ -13,7 +13,7 @@ router.param('id', function (req, res, next) {
 
 router.get('/', (req, res) => {
   const connection = mysql.createConnection(dbConfig)
-  const sql = 'SELECT id,monitor_code,monitor_name,project_code,upper_code,port_name,baud_rate,stop_bit,parity_check,channel_count,create_date,remark FROM B_Monitor'
+  const sql = 'SELECT id,monitor_code,channel_index,unit_id,signal_type,lower_limit,upper_limit,state,create_date FROM B_Point'
   connection.query(sql, function (err, result) {
     res.json(err ? err : result)
   })
@@ -23,10 +23,10 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
   const id = parseInt(req.params.id)
   if (!id) {
-    return res.send('ID must be integer')
+    return res.send('project ID must be integer')
   }
   const connection = mysql.createConnection(dbConfig)
-  const sql = 'SELECT id,monitor_code,monitor_name,project_code,upper_code,port_name,baud_rate,stop_bit,parity_check,channel_count,create_date,remark FROM B_Monitor WHERE id=?'
+  const sql = 'SELECT id,monitor_code,channel_index,unit_id,signal_type,lower_limit,upper_limit,state,create_date FROM B_Point WHERE id=?'
   connection.query(sql, [id], function (err, result) {
     res.json(err ? err : result[0])
   })
@@ -34,8 +34,8 @@ router.get('/:id', (req, res) => {
 })
 
 router.post('/', (req, res) => {
-  const keys = Object.keys(req.body)
-  const sql = `INSERT INTO B_Monitor(${keys.join(',')}) VALUES(${keys.map(key => '?').join(',')})`
+  const keys = Object.keys(req.body).filter(key => !/(id|create_date)/i.test(key))
+  const sql = `INSERT INTO B_Point(${keys.join(',')}) VALUES(${keys.map(key => '?').join(',')})`
   const sqlParams = keys.map(key => req.body[key])
   console.log(sql)
   console.log(sqlParams)
@@ -50,11 +50,11 @@ router.post('/', (req, res) => {
 router.put('/:id', (req, res) => {
   const id = parseInt(req.params.id)
   if (!id) {
-    return res.send('ID must be integer')
+    return res.send('project ID must be integer')
   }
 
-  const keys = Object.keys(req.body).filter(key => key !== 'id' && key !== 'create_date')
-  const sql = `UPDATE B_Monitor SET ${keys.map(key => `\`${key}\`=?`).join(',')} WHERE Id=?`
+  const keys = Object.keys(req.body).filter(key => !/(id|create_date)/i.test(key))
+  const sql = `UPDATE B_Point SET ${keys.map(key => `\`${key}\`=?`).join(',')} WHERE Id=?`
   const sqlParams = keys.map(key => req.body[key])
   sqlParams.push(id)
 
@@ -71,10 +71,10 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
   const id = parseInt(req.params.id)
   if (!id) {
-    return res.send('ID must be integer')
+    return res.send('project ID must be integer')
   }
   const connection = mysql.createConnection(dbConfig)
-  const sql = 'DELETE FROM B_Monitor WHERE id=?'
+  const sql = 'DELETE FROM B_Point WHERE id=?'
   connection.query(sql, [id], function (err, result) {
     res.json(err ? err : result)
   })

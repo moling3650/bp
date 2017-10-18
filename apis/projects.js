@@ -81,10 +81,10 @@ router.delete('/:id', (req, res) => {
   connection.end()
 })
 
-router.get('/:code/buildings', (req, res) => {
+router.get('/:code/uppers', (req, res) => {
   const code = req.params.code
   const connection = mysql.createConnection(dbConfig)
-  const sql = 'SELECT building_code AS value,building_name AS label FROM B_Building WHERE project_code=?'
+  const sql = 'SELECT upper_code AS value,upper_name AS label FROM B_Upper_Monitor WHERE project_code=?'
   connection.query(sql, [code], function (err, result) {
     res.json(err ? err : result)
   })

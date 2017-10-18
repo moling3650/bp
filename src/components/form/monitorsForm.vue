@@ -10,7 +10,7 @@
         <el-input v-model="form.monitor_name" :disabled="type === 'view'"/>
       </el-form-item>
 
-      <el-form-item label="项目/建筑" prop="codes">
+      <el-form-item label="项目/上位机" prop="codes">
         <el-cascader
           :options="projects"
           v-model="form.codes"
@@ -81,7 +81,7 @@
         rules: {
           monitor_code: [{ required: true, message: '请输入LORA代码', trigger: 'blur' }],
           monitor_name: [{ required: true, message: '请输入LORA名称', trigger: 'blur' }]
-          // codes: [{ required: true, message: '请选择项目/建筑', trigger: 'blur' }],
+          // codes: [{ required: true, message: '请选择项目/上位机', trigger: 'blur' }],
           // port_name: [{ required: true, message: '请输入端口名称', trigger: 'blur' }],
           // baud_rate: [{ required: true, type: 'number', message: '请输入端口', trigger: 'blur' }],
           // stop_bit: [{ required: true, type: 'number', message: '请输入其他配置', trigger: 'blur' }],
@@ -103,17 +103,17 @@
           })
         }).catch(err => console.log(err))
       },
-      fetchBuildings (projectCode) {
-        axios.get(`/api/projects/${projectCode}/buildings`).then(res => {
+      fetchUppers (projectCode) {
+        axios.get(`/api/projects/${projectCode}/uppers`).then(res => {
           const index = this.projects.findIndex(p => p.value === projectCode)
           if (~index) {
             this.projects[index].children = res.data
-            this.form.codes.push(this.form.building_code)
+            this.form.codes.push(this.form.upper_code)
           }
         }).catch(err => console.log(err))
       },
       projectChange (codes) {
-        this.fetchBuildings(codes[0])
+        this.fetchUppers(codes[0])
       },
       fetchMonitor (id) {
         axios.get(`/api/monitors/${id}`).then(res => {
@@ -121,7 +121,7 @@
             delete res.data.id
             this.form = Object.assign({}, res.data, {codes: []})
             this.form.codes.push(this.form.project_code)
-            this.fetchBuildings(this.form.project_code)
+            this.fetchUppers(this.form.project_code)
           }
         }).catch(err => console.log(err))
       },
@@ -130,7 +130,7 @@
           if (valid) {
             let formData = Object.assign({}, this.form)
             formData.project_code = formData.codes[0]
-            formData.building_code = formData.codes[1]
+            formData.upper_code = formData.codes[1]
             delete formData.codes
             axios({
               url: `/api/monitors/${this.id}`,

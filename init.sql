@@ -65,7 +65,7 @@ CREATE TABLE B_Monitor (
     monitor_code varchar(255) not null comment 'MAC地址或其他唯一编号',
     monitor_name varchar(255) not null comment 'LORA设备名称',
     project_code varchar(255) not null comment '所属项目',
-    building_code varchar(255) not null comment '所属建筑',
+    upper_code varchar(255) not null comment '所属上位机',
     port_name varchar(255) not null comment '端口名称',
     baud_rate int not null comment '端口',
     stop_bit int not null comment '其他配置',
@@ -90,3 +90,5 @@ CREATE TABLE B_Point (
     create_date datetime not null default current_timestamp comment '布设日期',
     primary key(id)
 ) ENGINE=innodb DEFAULT CHARSET=utf8;
+
+-- SELECT u.id, u.unit_name from B_Building_Unit u;

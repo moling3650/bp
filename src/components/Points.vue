@@ -1,21 +1,19 @@
 <template>
-  <div class="monitors">
-    <h1 class="title">所有LORA</h1>
+  <div class="points">
+    <h1 class="title">所有节点</h1>
     <p class="btn-add">
       <el-button type="success" icon="plus"
-        @click="openDialog('create', '')">添加LORA</el-button>
+        @click="openDialog('create', '')">添加节点</el-button>
     </p>
 
     <el-table :data="tableData" border style="width: 100%">
-      <el-table-column align="center" label="LORA代码" prop="monitor_code"/>
-      <el-table-column align="center" label="LORA名称" prop="monitor_name"/>
-      <el-table-column align="center" label="所属项目" prop="project_code"/>
-      <el-table-column align="center" label="所属上位机" prop="upper_code"/>
-      <el-table-column align="center" label="端口名称" prop="port_name"/>
-      <el-table-column align="center" label="端口" prop="baud_rate"/>
-      <el-table-column align="center" label="其他配置" prop="stop_bit"/>
-      <el-table-column align="center" label="奇偶校验" prop="parity_check"/>
-      <el-table-column align="center" label="通道数量" prop="channel_count"/>
+      <el-table-column align="center" label="节点代码" prop="monitor_code"/>
+      <el-table-column align="center" label="通道序号" prop="channel_index"/>
+      <el-table-column align="center" label="监测单元" prop="unit_id"/>
+      <el-table-column align="center" label="信号类型" prop="signal_type"/>
+      <el-table-column align="center" label="上限" prop="upper_limit"/>
+      <el-table-column align="center" label="下限" prop="lower_limit"/>
+      <el-table-column align="center" label="状态" prop="state"/>
       <el-table-column align="center" label="创建时间" prop="create_date" :formatter="fmtDate"/>
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
@@ -26,18 +24,18 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog title="LORA表单" :visible.sync="dialogFormVisible" top="5%">
-      <monitors-form :type="dialogFormType" :id="monitorId" @close="closeDialog"/>
+    <el-dialog title="节点表单" :visible.sync="dialogFormVisible" top="5%">
+      <points-form :type="dialogFormType" :id="monitorId" @close="closeDialog"/>
     </el-dialog>
   </div>
 </template>
 
 <script>
   import axios from 'axios'
-  import monitorsForm from '@/components/form/monitorsForm'
+  import pointsForm from '@/components/form/pointsForm'
 
   export default {
-    name: 'monitors',
+    name: 'points',
     data () {
       return {
         dialogFormVisible: false,
@@ -47,7 +45,7 @@
       }
     },
     components: {
-      monitorsForm
+      pointsForm
     },
     methods: {
       openDialog (type, monitorId) {
@@ -69,12 +67,12 @@
         return dateStr ? dateStr.replace(/(\d{4}-\d{2}-\d{2}).*?(\d{2}:\d{2}).*/, '$1 $2') : ''
       },
       handleDelete (id) {
-        this.$confirm('此操作将永久删除该LORA, 是否继续?', '提示', {
+        this.$confirm('此操作将永久删除该节点, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          axios.delete(`/api/monitors/${id}`).then(res => {
+          axios.delete(`/api/points/${id}`).then(res => {
             this.fetchTableData()
             this.$message({ type: 'success', message: '删除成功!' })
           }).catch(err => console.log(err))
@@ -83,7 +81,7 @@
         })
       },
       fetchTableData () {
-        axios.get('/api/monitors').then(res => {
+        axios.get('/api/points').then(res => {
           this.tableData = res.data
         }).catch(err => console.log(err))
       }
