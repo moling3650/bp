@@ -34,7 +34,7 @@ router.get('/:id', (req, res) => {
 })
 
 router.post('/', (req, res) => {
-  const keys = Object.keys(req.body).filter(key => !/(id|create_date)/i.test(key))
+  const keys = Object.keys(req.body).filter(key => !/^(id|create_date)$/i.test(key))
   const sql = `INSERT INTO B_Point(${keys.join(',')}) VALUES(${keys.map(key => '?').join(',')})`
   const sqlParams = keys.map(key => req.body[key])
   console.log(sql)
@@ -42,6 +42,7 @@ router.post('/', (req, res) => {
 
   const connection = mysql.createConnection(dbConfig)
   connection.query(sql, sqlParams, function (err, result) {
+    console.log(err ? err : result)
     res.json(err ? err : result)
   })
   connection.end()
@@ -53,7 +54,7 @@ router.put('/:id', (req, res) => {
     return res.send('project ID must be integer')
   }
 
-  const keys = Object.keys(req.body).filter(key => !/(id|create_date)/i.test(key))
+  const keys = Object.keys(req.body).filter(key => !/^(id|create_date)$/i.test(key))
   const sql = `UPDATE B_Point SET ${keys.map(key => `\`${key}\`=?`).join(',')} WHERE Id=?`
   const sqlParams = keys.map(key => req.body[key])
   sqlParams.push(id)

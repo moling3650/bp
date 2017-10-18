@@ -1,6 +1,6 @@
 <template>
   <div class="points-form">
-    <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+    <el-form ref="form" :model="form" :rules="rules" label-width="130px">
 
       <el-form-item label="通道序号" prop="channel_index">
         <el-select v-model="form.channel_index" placeholder="请选择通道序号">
@@ -81,8 +81,7 @@
           // lower_limit: [{ required: true, message: '请输入端口名称', trigger: 'blur' }],
           // upper_limit: [{ required: true, type: 'number', message: '请输入端口', trigger: 'blur' }],
           // stop_bit: [{ required: true, type: 'number', message: '请输入其他配置', trigger: 'blur' }],
-          // channel_count: [{ required: true, type: 'number', message: '请输入通道数量', trigger: 'blur' }],
-          codes: [{ required: true, message: '请选择项目/建筑', trigger: 'blur' }]
+          channel_count: [{ required: true, type: 'number', message: '请输入通道数量', trigger: 'blur' }]
         }
       }
     },
@@ -100,25 +99,24 @@
           })
         }).catch(err => console.log(err))
       },
-      fetchBuildings (monitorCode) {
-        axios.get(`/api/monitors/${monitorCode}/buildings`).then(res => {
+      fetchBuildingUnits (monitorCode) {
+        axios.get(`/api/monitors/${monitorCode}/buildingunits`).then(res => {
           const index = this.monitors.findIndex(p => p.value === monitorCode)
           if (~index) {
             this.monitors[index].children = res.data
-            this.form.codes.push(this.form.building_code)
+            this.form.codes.push(this.form.unit_id)
           }
         }).catch(err => console.log(err))
       },
       monitorChange (codes) {
-        this.fetchBuildings(codes[0])
+        this.fetchBuildingUnits(codes[0])
       },
       fetchMonitor (id) {
         axios.get(`/api/points/${id}`).then(res => {
           if (res.data) {
-            delete res.data.id
             this.form = Object.assign({}, res.data, {codes: []})
             this.form.codes.push(this.form.monitor_code)
-            this.fetchBuildings(this.form.monitor_code)
+            this.fetchBuildingUnits(this.form.monitor_code)
           }
         }).catch(err => console.log(err))
       },
@@ -127,8 +125,9 @@
           if (valid) {
             let formData = Object.assign({}, this.form)
             formData.monitor_code = formData.codes[0]
-            formData.building_code = formData.codes[1]
+            formData.unit_id = formData.codes[1]
             delete formData.codes
+            console.log(formData)
             axios({
               url: `/api/points/${this.id}`,
               method: this.type === 'create' ? 'post' : 'put',

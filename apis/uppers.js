@@ -34,7 +34,7 @@ router.get('/:id', (req, res) => {
 })
 
 router.post('/', (req, res) => {
-  const keys = Object.keys(req.body)
+  const keys = Object.keys(req.body).filter(key => !/^(id|create_date)$/i.test(key))
   const sql = `INSERT INTO B_Upper_Monitor(${keys.join(',')}) VALUES(${keys.map(key => '?').join(',')})`
   const sqlParams = keys.map(key => req.body[key])
   console.log(sql)
@@ -53,7 +53,7 @@ router.put('/:id', (req, res) => {
     return res.send('ID must be integer')
   }
 
-  const keys = Object.keys(req.body).filter(key => key !== 'id' && key !== 'create_date')
+  const keys = Object.keys(req.body).filter(key => !/^(id|create_date)$/i.test(key))
   const sql = `UPDATE B_Upper_Monitor SET ${keys.map(key => `\`${key}\`=?`).join(',')} WHERE Id=?`
   const sqlParams = keys.map(key => req.body[key])
   sqlParams.push(id)
