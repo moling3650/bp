@@ -9,13 +9,28 @@
     <el-table :data="tableData" border style="width: 100%">
       <el-table-column align="center" label="项目代码" prop="project_code"/>
       <el-table-column align="center" label="项目名称" prop="project_name"/>
-      <el-table-column align="center" label="省份" width="70" prop="province"/>
-      <el-table-column align="center" label="城市" width="70" prop="city"/>
-      <el-table-column align="center" label="项目负责人" prop="pm"/>
-      <el-table-column align="center" label="手机号码" prop="phone_no"/>
-      <el-table-column align="center" label="创建时间" prop="create_date" :formatter="fmtDate"/>
-      <el-table-column align="center" label="操作">
+      <el-table-column align="center" label="项目地址" width="100">
         <template slot-scope="scope">
+          <span>{{ scope.row.province }}</span>
+          <span>{{ scope.row.city }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="项目负责人">
+        <template slot-scope="scope">
+          <el-popover trigger="hover" placement="top">
+            <p class="popover-detail">姓名: {{ scope.row.pm }}</p>
+            <p class="popover-detail">手机: {{ scope.row.phone_no }}</p>
+            <div slot="reference" class="name-wrapper">
+              <el-tag>{{ scope.row.pm }}</el-tag>
+            </div>
+          </el-popover>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="创建时间" prop="create_date" :formatter="fmtDate"/>
+      <el-table-column align="center" label="操作" width="400">
+        <template slot-scope="scope">
+          <el-button size="small" type="info" @click="$router.push(`${scope.row.project_code}/buildings`)">管理建筑</el-button>
+          <el-button size="small" type="info" @click="$router.push(`${scope.row.project_code}/uppers`)">管理上位机</el-button>
           <el-button size="small" @click="openDialog('edit', scope.row.id)">编辑</el-button>
           <el-button size="small" type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
         </template>
@@ -101,5 +116,10 @@
   .btn-add {
     margin-bottom: 5px;
     text-align: right;
+  }
+
+  .popover-detail {
+    font-size: 16px;
+    line-height: 1.5;
   }
 </style>
