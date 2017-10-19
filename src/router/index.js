@@ -6,6 +6,8 @@ import BuildingUnits from '@/components/BuildingUnits'
 import Uppers from '@/components/Uppers'
 import Monitors from '@/components/Monitors'
 import Points from '@/components/Points'
+import ManageBuildings from '@/components/ManageBuildings'
+import ManageUppers from '@/components/ManageUppers'
 
 Vue.use(Router)
 
@@ -15,6 +17,16 @@ export default new Router({
       path: '/',
       name: 'Index',
       component: Index
+    },
+    {
+      path: '/manage/:projectCode/buildings',
+      name: 'ManageBuildings',
+      component: ManageBuildings
+    },
+    {
+      path: '/manage/:projectCode/uppers',
+      name: 'ManageUppers',
+      component: ManageUppers
     },
     {
       path: '/buildings',

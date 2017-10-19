@@ -13,8 +13,14 @@ router.param('id', function (req, res, next) {
 
 router.get('/', (req, res) => {
   const connection = mysql.createConnection(dbConfig)
-  const sql = 'SELECT id,unit_name,building_code,create_date,remark FROM B_Building_Unit'
-  connection.query(sql, function (err, result) {
+  let sql = 'SELECT id,unit_name,building_code,create_date,remark FROM B_Building_Unit'
+  let sqlParams = []
+  const buildingCode = req.query.buildingCode
+  if (buildingCode) {
+    sql += ' WHERE building_code = ?'
+    sqlParams.push(buildingCode)
+  }
+  connection.query(sql, sqlParams, function (err, result) {
     res.json(err ? err : result)
   })
   connection.end()
