@@ -19,12 +19,12 @@ export default new Router({
       component: Index
     },
     {
-      path: '/manage/:projectCode/buildings',
+      path: '/manage/:projectId/buildings',
       name: 'ManageBuildings',
       component: ManageBuildings
     },
     {
-      path: '/manage/:projectCode/uppers',
+      path: '/manage/:projectId/uppers',
       name: 'ManageUppers',
       component: ManageUppers
     },
