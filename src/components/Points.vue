@@ -7,7 +7,7 @@
     </p>
 
     <el-table :data="tableData" border style="width: 100%">
-      <el-table-column align="center" label="节点代码" prop="monitor_code"/>
+      <el-table-column align="center" label="LORA代码" prop="monitor_code"/>
       <el-table-column align="center" label="通道序号" prop="channel_index"/>
       <el-table-column align="center" label="监测单元" prop="unit_id"/>
       <el-table-column align="center" label="信号类型" prop="signal_type"/>
@@ -24,8 +24,8 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog title="节点表单" :visible.sync="dialogFormVisible" top="5%">
-      <points-form :type="dialogFormType" :id="monitorId" @close="closeDialog"/>
+    <el-dialog title="节点表单" :visible.sync="dialogFormVisible" top="5%" :before-close="resetForm">
+      <points-form ref="form" :type="dialogFormType" :id="monitorId" @close="closeDialog"/>
     </el-dialog>
   </div>
 </template>
@@ -48,6 +48,10 @@
       pointsForm
     },
     methods: {
+      resetForm (done) {
+        this.$refs.form.reset()
+        done()
+      },
       openDialog (type, monitorId) {
         this.dialogFormType = type
         this.monitorId = monitorId

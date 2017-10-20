@@ -2,15 +2,25 @@
   <div class="ManageBuildings">
     <h1 class="title">项目建筑管理</h1>
     <el-row>
-      <!-- :render-content="renderNode" -->
-      <el-col :span="8">
+
+      <el-col :span="8" :offset="1">
+        <el-button-group>
+          <el-button type="success" v-if="type !== 'point'">{{ addButtonText }}</el-button>
+          <el-button type="info">编辑</el-button>
+          <el-button type="danger">删除</el-button>
+        </el-button-group>
         <el-tree
           :data="treeData"
           :load="loadNode"
+          highlight-current
           accordion
           lazy
           @node-click="handleNodeClick">
         </el-tree>
+      </el-col>
+
+      <el-col :span="12" :offset="2">
+        <component :is="type + 'sForm'" :type="formType" :id="formId"/>
       </el-col>
     </el-row>
   </div>
@@ -18,18 +28,44 @@
 
 <script>
   import axios from 'axios'
+  import projectsForm from '@/components/form/projectsForm'
+  import buildingsForm from '@/components/form/buildingsForm'
+  import buildingUnitsForm from '@/components/form/buildingUnitsForm'
+  import pointsForm from '@/components/form/pointsForm'
 
   export default {
     name: 'ManageBuildings',
     data () {
       return {
+        type: 'project',
+        formId: null,
+        formType: '',
         projectCode: '',
+        buildingCode: '',
+        unitId: 0,
         treeData: []
       }
     },
+    computed: {
+      addButtonText () {
+        const textMap = {
+          project: '新建建筑',
+          building: '新建建筑单元',
+          buildingUnit: '新建节点'
+        }
+        return textMap[this.type]
+      }
+    },
+    components: {
+      projectsForm,
+      buildingsForm,
+      buildingUnitsForm,
+      pointsForm
+    },
     methods: {
-      handleNodeClick () {
-        // console.log(arguments)
+      handleNodeClick (data) {
+        this.type = data.type
+        this.formId = data.id
       },
       loadNode (node, resolve) {
         if (node.data.type === 'project') {
@@ -41,31 +77,12 @@
         }
         return resolve([])
       },
-      // append (store, data) {
-      //   console.log(data)
-      //   store.append({ value: 'id++', label: 'testtest', children: [] }, data)
-      // },
-      // remove (store, data) {
-      //   store.remove(data)
-      // },
-      // renderNode (h, { node, data, store }) {
-      //   return (
-      //     <span>
-      //       <span>
-      //         <span>{node.label}</span>
-      //       </span>
-      //       <span style="float: right; margin-right: 20px">
-      //         <el-button size="mini" on-click={ () => this.append(store, data) }>Append</el-button>
-      //         <el-button size="mini" on-click={ () => this.remove(store, data) }>Delete</el-button>
-      //       </span>
-      //     </span>
-      //   )
-      // },
       fetchProject (projectId) {
         axios.get(`/api/projects/${projectId}`).then(res => {
           this.projectCode = res.data.project_code
           this.treeData = [{
             type: 'project',
+            id: res.data.id,
             label: res.data.project_name,
             value: res.data.project_code
           }]
@@ -76,6 +93,7 @@
           return res.data.map(item => {
             return {
               type: 'building',
+              id: item.id,
               label: item.building_name,
               value: item.building_code
             }
@@ -87,6 +105,7 @@
           return res.data.map(item => {
             return {
               type: 'buildingUnit',
+              id: item.id,
               label: item.unit_name,
               value: item.id
             }
@@ -98,6 +117,7 @@
           return res.data.map(item => {
             return {
               type: 'point',
+              id: item.id,
               label: `节点 － ${item.id}`,
               value: item.id
             }

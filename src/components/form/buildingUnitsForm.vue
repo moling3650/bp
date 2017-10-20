@@ -58,11 +58,13 @@
     },
     watch: {
       id: function (val, oldVal) {
-        this.$refs.form.resetFields()
         val && this.init(val)
       }
     },
     methods: {
+      reset () {
+        this.$refs.form.resetFields()
+      },
       fetchBuildings () {
         axios.get('/api/buildings').then(res => {
           this.buildings = res.data.map(item => {
@@ -88,7 +90,6 @@
               method: this.type === 'create' ? 'post' : 'put',
               data: this.form
             }).then(res => {
-              this.$refs.form.resetFields()
               res.errno && console.log(res.sqlMessage)
               this.$emit('close', !res.errno)
             }).catch(err => console.log(err))

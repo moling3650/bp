@@ -20,8 +20,8 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog title="建筑表单" :visible.sync="dialogFormVisible">
-      <buildings-form :type="dialogFormType" :id="buildingId" @close="closeDialog"/>
+    <el-dialog title="建筑表单" :visible.sync="dialogFormVisible" :before-close="resetForm">
+      <buildings-form ref="form" :type="dialogFormType" :id="buildingId" @close="closeDialog"/>
     </el-dialog>
   </div>
 </template>
@@ -44,6 +44,10 @@
       buildingsForm
     },
     methods: {
+      resetForm (done) {
+        this.$refs.form.reset()
+        done()
+      },
       openDialog (type, buildingId) {
         this.dialogFormType = type
         this.buildingId = buildingId

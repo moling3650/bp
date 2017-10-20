@@ -26,8 +26,8 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog title="LORA表单" :visible.sync="dialogFormVisible" top="5%">
-      <monitors-form :type="dialogFormType" :id="monitorId" @close="closeDialog"/>
+    <el-dialog title="LORA表单" :visible.sync="dialogFormVisible" top="5%" :before-close="resetForm">
+      <monitors-form ref="form" :type="dialogFormType" :id="monitorId" @close="closeDialog"/>
     </el-dialog>
   </div>
 </template>
@@ -50,6 +50,10 @@
       monitorsForm
     },
     methods: {
+      resetForm (done) {
+        this.$refs.form.reset()
+        done()
+      },
       openDialog (type, monitorId) {
         this.dialogFormType = type
         this.monitorId = monitorId

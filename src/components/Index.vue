@@ -37,8 +37,8 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog title="项目表单" :visible.sync="dialogFormVisible">
-      <projects-form :type="dialogFormType" :id="projectId" @close="closeDialog"/>
+    <el-dialog title="项目表单" :visible.sync="dialogFormVisible" :before-close="resetForm">
+      <projects-form ref="form" :type="dialogFormType" :id="projectId" @close="closeDialog"/>
     </el-dialog>
   </div>
 </template>
@@ -61,6 +61,10 @@
       projectsForm
     },
     methods: {
+      resetForm (done) {
+        this.$refs.form.reset()
+        done()
+      },
       openDialog (type, projectId) {
         this.dialogFormType = type
         this.projectId = projectId
