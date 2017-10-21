@@ -17,7 +17,7 @@
         </el-select>
 
         <el-button-group style="float: right;">
-          <el-button type="success" v-if="addButtonText">{{ addButtonText }}</el-button>
+          <el-button type="success" @click="addBuilding">新增建筑</el-button>
           <el-button type="danger">删除</el-button>
         </el-button-group>
 
@@ -33,11 +33,17 @@
       </el-col>
 
       <el-col :span="12" :offset="2">
-        <component v-if="formId !== null" :is="type + 'sForm'" :type="formType" :id="formId"
+        <component v-if="formId !== null" type="edit" key="editForm" :is="type + 'sForm'" :id="formId"
           :projectCode="projectCode" :buildingCode="buildingCode" :unitId="unitId" @close="closeForm"
         />
       </el-col>
     </el-row>
+
+    <el-dialog title="新增建筑" :visible.sync="dialogFormVisible" :before-close="resetForm">
+      <buildings-form ref="form" type="create" key="createForm" id=""
+        :projectCode="projectCode" :buildingCode="buildingCode" :unitId="unitId" @close="closeForm"
+      />
+    </el-dialog>
   </div>
 </template>
 
@@ -52,24 +58,15 @@
     name: 'ManageBuildings',
     data () {
       return {
+        dialogFormVisible: false,
         type: 'building',
         formId: null,
-        formType: '',
         projectCode: '',
         buildingCode: '',
         unitId: 0,
+        node: null,
         projects: [],
         treeData: []
-      }
-    },
-    computed: {
-      addButtonText () {
-        const textMap = {
-          building: '新建建筑',
-          buildingUnit: '新建建筑单元'
-          // buildingUnit: '新建节点'
-        }
-        return textMap[this.type]
       }
     },
     components: {
@@ -79,14 +76,31 @@
       // pointsForm
     },
     methods: {
-      closeForm (flag) {
+      addBuilding () {
+        if (this.projectCode) {
+          this.dialogFormVisible = true
+        } else {
+          this.$message({ type: 'info', message: '先选择一个项目' })
+        }
+      },
+      resetForm (done) {
+        this.$refs.form.reset()
+        done()
+      },
+      closeForm (flag, type, label) {
         if (flag) {
           this.$message({ type: 'success', message: '编辑成功' })
+          if (type === 'create') {
+            this.projectChange(this.projectCode)
+          } else if (type === 'edit') {
+            this.node.data.label = label
+          }
         } else {
           this.$message({ type: 'info', message: '已取消编辑' })
         }
+        this.dialogFormVisible = false
       },
-      handleNodeClick (data) {
+      handleNodeClick (data, node) {
         this.type = data.type
         this.formId = data.id
         if (data.type === 'building') {
@@ -94,6 +108,7 @@
         } else if (data.type === 'buildingUnit') {
           this.unitId = data.value
         }
+        this.node = node
       },
       loadNode (node, resolve) {
         if (node.data.type === 'project') {

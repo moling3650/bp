@@ -89,16 +89,13 @@
       onSubmit () {
         this.$refs.form.validate((valid) => {
           if (valid) {
-            if (this.buildingCode) {
-              this.form.building_code = this.buildingCode
-            }
             axios({
               url: `/api/buildingunits/${this.id}`,
               method: this.type === 'create' ? 'post' : 'put',
               data: this.form
             }).then(res => {
               res.errno && console.log(res.sqlMessage)
-              this.$emit('close', !res.errno)
+              this.$emit('close', !res.errno, this.type, this.form.unit_name)
             }).catch(err => console.log(err))
           } else {
             console.log('error submit!!')
@@ -107,7 +104,11 @@
         })
       },
       init (unitId) {
-        this.buildingCode === null && this.fetchBuildings()
+        if (this.buildingCode) {
+          this.form.building_code = this.buildingCode
+        } else {
+          this.fetchBuildings()
+        }
         unitId && this.fetchBuildingUnit(unitId)
       }
     },
