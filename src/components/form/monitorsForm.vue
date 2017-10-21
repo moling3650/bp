@@ -32,7 +32,7 @@
       </el-form-item>
 
       <el-form-item label="奇偶校验" prop="parity_check" required>
-        <el-switch v-model="form.parity_check" :on-value="1" :off-value="0"/>
+        <el-switch v-model="form.parity_check" :on-value="1" :off-value="0" :disabled="type === 'view'"/>
       </el-form-item>
 
       <el-form-item label="通道数量" prop="channel_count">

@@ -9,7 +9,7 @@
         <el-input v-model="form.building_name"/>
       </el-form-item>
 
-      <el-form-item label="项目名称" prop="project_code">
+      <el-form-item v-if="!projectCode" label="项目名称" prop="project_code">
         <el-select v-model="form.project_code" placeholder="请选择项目">
           <el-option
             v-for="project in projects"
@@ -54,6 +54,10 @@
       },
       id: {
         type: [String, Number]
+      },
+      projectCode: {
+        type: String,
+        default: null
       }
     },
     data () {
@@ -103,6 +107,9 @@
       onSubmit () {
         this.$refs.form.validate((valid) => {
           if (valid) {
+            if (this.projectCode) {
+              this.form.project_code = this.projectCode
+            }
             axios({
               url: `/api/buildings/${this.id}`,
               method: this.type === 'create' ? 'post' : 'put',
@@ -118,7 +125,7 @@
         })
       },
       init (buildingId) {
-        this.fetchProjects()
+        this.projectCode === null && this.fetchProjects()
         buildingId && this.fetchBuilding(buildingId)
       }
     },

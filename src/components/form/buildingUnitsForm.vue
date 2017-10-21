@@ -6,7 +6,7 @@
         <el-input v-model="form.unit_name" :disabled="type === 'view'"/>
       </el-form-item>
 
-      <el-form-item label="选择建筑" prop="building_code">
+      <el-form-item v-if="buildingCode === null" label="选择建筑" prop="building_code">
         <el-select v-model="form.building_code" placeholder="请选择建筑" :disabled="type === 'view'">
           <el-option
             v-for="building in buildings"
@@ -40,6 +40,10 @@
       },
       id: {
         type: [String, Number]
+      },
+      buildingCode: {
+        type: String,
+        default: null
       }
     },
     data () {
@@ -85,6 +89,9 @@
       onSubmit () {
         this.$refs.form.validate((valid) => {
           if (valid) {
+            if (this.buildingCode) {
+              this.form.building_code = this.buildingCode
+            }
             axios({
               url: `/api/buildingunits/${this.id}`,
               method: this.type === 'create' ? 'post' : 'put',
@@ -100,7 +107,7 @@
         })
       },
       init (unitId) {
-        this.fetchBuildings()
+        this.buildingCode === null && this.fetchBuildings()
         unitId && this.fetchBuildingUnit(unitId)
       }
     },

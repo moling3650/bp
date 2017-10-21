@@ -3,7 +3,7 @@
     <el-form ref="form" :model="form" :rules="rules" label-width="130px">
 
       <el-form-item label="通道序号" prop="channel_index">
-        <el-select v-model="form.channel_index" placeholder="请选择通道序号">
+        <el-select v-model="form.channel_index" placeholder="请选择通道序号" :disabled="type === 'view'">
           <el-option
             v-for="index in 8"
             :key="index"
@@ -12,7 +12,7 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="LORA/监测单元" prop="codes">
+      <el-form-item  v-if="!projectCode" label="LORA/监测单元" prop="codes">
         <el-cascader
           :options="monitors"
           v-model="form.codes"
@@ -21,8 +21,19 @@
         ></el-cascader>
       </el-form-item>
 
+      <el-form-item v-if="projectCode && unitId" label="LORA名称" prop="monitor_code">
+        <el-select v-model="form.monitor_code" placeholder="请选择LORA">
+          <el-option
+            v-for="monitor in monitors"
+            :key="monitor.value"
+            :label="monitor.label"
+            :value="monitor.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+
       <el-form-item label="信号类型" prop="signal_type">
-        <el-select v-model="form.signal_type" placeholder="请选择信号类型">
+        <el-select v-model="form.signal_type" placeholder="请选择信号类型" :disabled="type === 'view'">
           <el-option
             v-for="(item, index) in ['正弦', '热敏', '0~5V', '4~20MA']"
             :key="index"
@@ -41,7 +52,7 @@
       </el-form-item>
 
       <el-form-item label="状态" prop="state" required>
-        <el-switch v-model="form.state" :on-value="1" :off-value="0"/>
+        <el-switch v-model="form.state" :on-value="1" :off-value="0" :disabled="type === 'view'"/>
       </el-form-item>
 
       <el-form-item v-if="type !== 'view'">
@@ -63,6 +74,14 @@
       },
       id: {
         type: [String, Number]
+      },
+      projectCode: {
+        type: String,
+        default: null
+      },
+      unitId: {
+        type: Number,
+        default: null
       }
     },
     data () {
@@ -71,6 +90,7 @@
         form: {
           channel_index: 1,
           codes: [],
+          monitor_code: '',
           signal_type: 0,
           lower_limit: 0,
           upper_limit: 0,
@@ -94,8 +114,8 @@
       reset () {
         this.$refs.form.resetFields()
       },
-      fetchmonitors () {
-        axios.get('/api/monitors').then(res => {
+      fetchMonitors () {
+        axios.get(`/api/monitors?projectCode=${this.projectCode === null ? '' : this.projectCode}`).then(res => {
           this.monitors = res.data.map(item => {
             return { label: item.monitor_name, value: item.monitor_code, children: [] }
           })
@@ -125,11 +145,12 @@
       onSubmit () {
         this.$refs.form.validate((valid) => {
           if (valid) {
-            let formData = Object.assign({}, this.form)
-            formData.monitor_code = formData.codes[0]
-            formData.unit_id = formData.codes[1]
+            let formData = Object.assign({}, this.form, { 'unit_id': this.unitId })
+            if (this.unitId === null) {
+              formData.monitor_code = formData.codes[0]
+              formData.unit_id = formData.codes[1]
+            }
             delete formData.codes
-            console.log(formData)
             axios({
               url: `/api/points/${this.id}`,
               method: this.type === 'create' ? 'post' : 'put',
@@ -145,7 +166,7 @@
         })
       },
       init (monitorId) {
-        this.fetchmonitors()
+        this.fetchMonitors(this.unitId)
         monitorId && this.fetchMonitor(monitorId)
       }
     },

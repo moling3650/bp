@@ -1,10 +1,12 @@
 <template>
   <div class="index">
     <h1 class="title">所有项目</h1>
-    <p class="btn-add">
-      <el-button type="success" icon="plus"
-        @click="openDialog('create', '')">添加项目</el-button>
-    </p>
+    <div class="button-group">
+      <el-button-group>
+        <el-button type="info" icon="setting" @click="$router.push('/manage/admin/buildings')">超级管理</el-button>
+        <el-button type="success" icon="plus" @click="openDialog('create', '')">添加项目</el-button>
+      </el-button-group>
+    </div>
 
     <el-table :data="tableData" border style="width: 100%">
       <el-table-column align="center" label="项目代码" prop="project_code"/>
@@ -30,7 +32,6 @@
       <el-table-column align="center" label="操作" width="400">
         <template slot-scope="scope">
           <el-button size="small" type="info" @click="$router.push(`/manage/${scope.row.id}/buildings`)">管理建筑</el-button>
-          <el-button size="small" type="info" @click="$router.push(`/manage/${scope.row.id}/uppers`)">管理上位机</el-button>
           <el-button size="small" @click="openDialog('edit', scope.row.id)">编辑</el-button>
           <el-button size="small" type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
         </template>
@@ -117,8 +118,9 @@
     text-align: center;
   }
 
-  .btn-add {
-    margin-bottom: 5px;
+  .button-group {
+    margin-right: 10px;
+    margin-bottom: 10px;
     text-align: right;
   }
 
