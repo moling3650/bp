@@ -45,7 +45,7 @@
 </template>
 
 <script>
-  import { getProjects, deleteProject } from '@/apis/projects.js'
+  import ajax from '@/apis'
   import projectsForm from '@/components/form/projectsForm'
 
   export default {
@@ -89,7 +89,7 @@
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }).then(() => deleteProject(id)
+        }).then(() => ajax('delete project', { id })
         ).then(res => {
           this.fetchTableData()
           this.$message({ type: 'success', message: '删除成功' })
@@ -98,7 +98,7 @@
         })
       },
       fetchTableData () {
-        getProjects().then(res => {
+        ajax('get projects').then(res => {
           this.tableData = res.data
         })
       }
