@@ -38,7 +38,7 @@
 </template>
 
 <script>
-  import axios from 'axios'
+  import ajax from '@/apis'
 
   export default {
     name: 'projectsForm',
@@ -81,23 +81,21 @@
         this.$refs.form.resetFields()
       },
       fetchProject (projectId) {
-        axios.get(`/api/projects/${projectId}`).then(res => {
+        ajax('get project', { id: projectId }).then(res => {
           if (res.data) {
             this.form = res.data
           }
-        }).catch(err => console.log(err))
+        })
       },
       onSubmit () {
         this.$refs.form.validate((valid) => {
           if (valid) {
-            axios({
-              url: `/api/projects/${this.id}`,
-              method: this.type === 'create' ? 'post' : 'put',
-              data: this.form
-            }).then(res => {
+            const api = this.type === 'create' ? 'post project' : 'put project'
+            this.type === 'create' && (this.form.id = '')
+            ajax(api, this.form).then(res => {
               res.errno && console.log(res.sqlMessage)
               this.$emit('close', !res.errno)
-            }).catch(err => console.log(err))
+            })
           } else {
             console.log('error submit!!')
             return false
