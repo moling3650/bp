@@ -33,7 +33,7 @@
       </el-col>
 
       <el-col :span="12" :offset="2">
-        <component v-if="formId !== null" type="edit" key="editForm" :is="type + 'sForm'" :id="formId"
+        <component class="form" v-if="formId !== null" type="edit" key="editForm" :is="type + 'sForm'" :id="formId"
           :projectCode="projectCode" :buildingCode="buildingCode" :unitId="unitId" @close="closeForm"
         />
       </el-col>
@@ -199,5 +199,9 @@
     font-size: 20px;
     text-align: center;
     line-height: 5;
+  }
+
+  .form {
+    margin-top: 80px;
   }
 </style>

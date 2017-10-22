@@ -45,7 +45,7 @@
 </template>
 
 <script>
-  import axios from 'axios'
+  import { getProjects, deleteProject } from '@/apis/projects.js'
   import projectsForm from '@/components/form/projectsForm'
 
   export default {
@@ -89,19 +89,18 @@
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }).then(() => {
-          axios.delete(`/api/projects/${id}`).then(res => {
-            this.fetchTableData()
-            this.$message({ type: 'success', message: '删除成功' })
-          }).catch(err => console.log(err))
+        }).then(() => deleteProject(id)
+        ).then(res => {
+          this.fetchTableData()
+          this.$message({ type: 'success', message: '删除成功' })
         }).catch(() => {
           this.$message({ type: 'info', message: '已取消删除' })
         })
       },
       fetchTableData () {
-        axios.get('/api/projects').then(res => {
+        getProjects().then(res => {
           this.tableData = res.data
-        }).catch(err => console.log(err))
+        })
       }
     },
     mounted () {
