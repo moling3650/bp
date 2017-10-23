@@ -63,9 +63,10 @@
         }
         ajax('get projects', { projectCode: value }).then(res => {
           if (res.data.length) {
-            return callback(new Error('项目代码已占用'))
+            throw new Error('项目代码已占用')
           }
-        })
+          callback()
+        }).catch(err => callback(err))
       }
       return {
         form: {
