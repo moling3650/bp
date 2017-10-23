@@ -31,7 +31,7 @@
 
       <el-form-item>
         <el-button type="primary" @click="onSubmit">{{ id ? '保存' : '新建'}}</el-button>
-        <el-button @click="$emit('close', false)">取消</el-button>
+        <el-button @click="reset(false)">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -53,6 +53,7 @@
     data () {
       return {
         form: {
+          id: '',
           project_code: '',
           project_name: '',
           province: '',
@@ -77,11 +78,13 @@
       }
     },
     methods: {
-      reset () {
+      reset (flag) {
+        this.form.id = ''
+        this.$emit('close', flag, this.type)
         this.$refs.form.resetFields()
       },
-      fetchProject (projectId) {
-        ajax('get project', { id: projectId }).then(res => {
+      fetchProject (id) {
+        ajax('get project', { id }).then(res => {
           if (res.data) {
             this.form = res.data
           }
@@ -91,10 +94,9 @@
         this.$refs.form.validate((valid) => {
           if (valid) {
             const api = this.type === 'create' ? 'post project' : 'put project'
-            this.type === 'create' && (this.form.id = '')
             ajax(api, this.form).then(res => {
               res.errno && console.log(res.sqlMessage)
-              this.$emit('close', !res.errno)
+              this.reset(!res.errno)
             })
           } else {
             console.log('error submit!!')
