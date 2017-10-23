@@ -31,7 +31,7 @@
 </template>
 
 <script>
-  import axios from 'axios'
+  import ajax from '@/apis'
   import pointsForm from '@/components/form/pointsForm'
 
   export default {
@@ -75,19 +75,18 @@
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }).then(() => {
-          axios.delete(`/api/points/${id}`).then(res => {
-            this.fetchTableData()
-            this.$message({ type: 'success', message: '删除成功!' })
-          }).catch(err => console.log(err))
+        }).then(() => ajax('delete point', { id })
+        ).then(res => {
+          this.fetchTableData()
+          this.$message({ type: 'success', message: '删除成功!' })
         }).catch(() => {
           this.$message({ type: 'info', message: '已取消删除' })
         })
       },
       fetchTableData () {
-        axios.get('/api/points').then(res => {
+        ajax('get points').then(res => {
           this.tableData = res.data
-        }).catch(err => console.log(err))
+        })
       }
     },
     mounted () {

@@ -33,7 +33,7 @@
 </template>
 
 <script>
-  import axios from 'axios'
+  import ajax from '@/apis'
   import monitorsForm from '@/components/form/monitorsForm'
 
   export default {
@@ -78,19 +78,18 @@
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }).then(() => {
-          axios.delete(`/api/monitors/${id}`).then(res => {
-            this.fetchTableData()
-            this.$message({ type: 'success', message: '删除成功!' })
-          }).catch(err => console.log(err))
+        }).then(() => ajax('delete monitor', { id })
+        ).then(res => {
+          this.fetchTableData()
+          this.$message({ type: 'success', message: '删除成功!' })
         }).catch(() => {
           this.$message({ type: 'info', message: '已取消删除' })
         })
       },
       fetchTableData () {
-        axios.get('/api/monitors').then(res => {
+        ajax('get monitors').then(res => {
           this.tableData = res.data
-        }).catch(err => console.log(err))
+        })
       }
     },
     mounted () {

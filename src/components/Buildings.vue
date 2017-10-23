@@ -75,11 +75,10 @@
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }).then(() => {
-          ajax('delete building', { id }).then(res => {
-            this.fetchTableData()
-            this.$message({ type: 'success', message: '删除成功!' })
-          })
+        }).then(() => ajax('delete building', { id })
+        ).then(res => {
+          this.fetchTableData()
+          this.$message({ type: 'success', message: '删除成功!' })
         }).catch(() => {
           this.$message({ type: 'info', message: '已取消删除' })
         })
