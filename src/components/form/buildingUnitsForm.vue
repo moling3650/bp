@@ -23,14 +23,14 @@
 
       <el-form-item v-if="type !== 'view'">
         <el-button type="primary" @click="onSubmit">{{ id ? '保存' : '新建'}}</el-button>
-        <el-button @click="$emit('close', false)">取消</el-button>
+        <el-button @click="reset(false)">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script>
-  import axios from 'axios'
+  import ajax from '@/apis'
 
   export default {
     name: 'buildingUnitsForm',
@@ -66,37 +66,36 @@
       }
     },
     methods: {
-      reset () {
+      reset (type) {
+        this.form.id = ''
+        this.$emit('close', type, this.type, this.form.unit_name)
         this.$refs.form.resetFields()
       },
       fetchBuildings () {
-        axios.get('/api/buildings').then(res => {
+        ajax('get buildings').then(res => {
           this.buildings = res.data.map(item => {
             return { name: item.building_name, code: item.building_code }
           })
           if (this.buildings.length > 0) {
             this.form.building_code = this.buildings[0].code
           }
-        }).catch(err => console.log(err))
+        })
       },
       fetchBuildingUnit (id) {
-        axios.get(`/api/buildingunits/${id}`).then(res => {
+        ajax('get buildingunit', { id }).then(res => {
           if (res.data) {
             this.form = res.data
           }
-        }).catch(err => console.log(err))
+        })
       },
       onSubmit () {
         this.$refs.form.validate((valid) => {
           if (valid) {
-            axios({
-              url: `/api/buildingunits/${this.id}`,
-              method: this.type === 'create' ? 'post' : 'put',
-              data: this.form
-            }).then(res => {
+            const api = (this.type === 'create') ? 'post buildingunit' : 'put buildingunit'
+            ajax(api, this.form).then(res => {
               res.errno && console.log(res.sqlMessage)
-              this.$emit('close', !res.errno, this.type, this.form.unit_name)
-            }).catch(err => console.log(err))
+              this.reset(!res.errno)
+            })
           } else {
             console.log('error submit!!')
             return false
