@@ -52,6 +52,9 @@
     },
     data () {
       var checkProjectCode = (rule, value, callback) => {
+        if (this.type !== 'create') {
+          return callback()
+        }
         if (!value) {
           return callback(new Error('请输入项目代码'))
         }
