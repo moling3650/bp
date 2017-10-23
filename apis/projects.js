@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
   const connection = mysql.createConnection(dbConfig)
   let sql = 'SELECT id,project_code,project_name,province,city,pm,phone_no,create_date,remark FROM B_Project'
   let sqlParams = []
-  const projectCode = parseInt(req.query.projectCode)
+  const projectCode = req.query.projectCode
   if (projectCode) {
     sql += ' WHERE project_code=?'
     sqlParams.push(projectCode)
