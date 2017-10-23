@@ -51,6 +51,19 @@
       }
     },
     data () {
+      var checkProjectCode = (rule, value, callback) => {
+        if (!value) {
+          return callback(new Error('请输入项目代码'))
+        }
+        if (!/\w{4,16}$/.test(value)) {
+          return callback(new Error('请输入4至16位的英文、数字或下划线'))
+        }
+        ajax('get projects', { projectCode: value }).then(res => {
+          if (res.data.length) {
+            return callback(new Error('项目代码已占用'))
+          }
+        })
+      }
       return {
         form: {
           id: '',
@@ -63,7 +76,7 @@
           remark: ''
         },
         rules: {
-          project_code: [{ required: true, message: '请输入项目代码', trigger: 'blur' }],
+          project_code: [{ required: true, validator: checkProjectCode, trigger: 'blur' }],
           project_name: [{ required: true, message: '请输入项目名称', trigger: 'blur' }],
           province: [{ required: true, message: '请输入省份', trigger: 'blur' }],
           city: [{ required: true, message: '请输入城市', trigger: 'blur' }],
