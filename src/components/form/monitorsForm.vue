@@ -45,13 +45,14 @@
 
       <el-form-item v-if="type !== 'view'">
         <el-button type="primary" @click="onSubmit">{{ id ? '保存' : '新建'}}</el-button>
-        <el-button @click="$emit('close', false)">取消</el-button>
+        <el-button @click="reset(false)">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script>
+  import ajax from '@/apis'
   import axios from 'axios'
 
   export default {
@@ -68,6 +69,7 @@
       return {
         projects: [],
         form: {
+          id: '',
           monitor_code: '',
           monitor_name: '',
           codes: [],
@@ -95,15 +97,17 @@
       }
     },
     methods: {
-      reset () {
+      reset (flag) {
+        this.form.id = ''
+        this.$emit('close', flag, this.type)
         this.$refs.form.resetFields()
       },
       fetchProjects () {
-        axios.get('/api/projects').then(res => {
+        ajax('get projects').then(res => {
           this.projects = res.data.map(item => {
             return { label: item.project_name, value: item.project_code, children: [] }
           })
-        }).catch(err => console.log(err))
+        })
       },
       fetchUppers (projectCode) {
         axios.get(`/api/projects/${projectCode}/uppers`).then(res => {
@@ -112,36 +116,33 @@
             this.projects[index].children = res.data
             this.form.codes.push(this.form.upper_code)
           }
-        }).catch(err => console.log(err))
+        })
       },
       projectChange (codes) {
         this.fetchUppers(codes[0])
       },
       fetchMonitor (id) {
-        axios.get(`/api/monitors/${id}`).then(res => {
+        ajax('get monitor', { id }).then(res => {
           if (res.data) {
             delete res.data.id
             this.form = Object.assign({}, res.data, {codes: []})
             this.form.codes.push(this.form.project_code)
             this.fetchUppers(this.form.project_code)
           }
-        }).catch(err => console.log(err))
+        })
       },
       onSubmit () {
         this.$refs.form.validate((valid) => {
           if (valid) {
-            let formData = Object.assign({}, this.form)
+            let formData = Object.assign({}, this.form, { id: this.id })
             formData.project_code = formData.codes[0]
             formData.upper_code = formData.codes[1]
             delete formData.codes
-            axios({
-              url: `/api/monitors/${this.id}`,
-              method: this.type === 'create' ? 'post' : 'put',
-              data: formData
-            }).then(res => {
+            const api = (this.type === 'create') ? 'post monitor' : 'put monitor'
+            ajax(api, formData).then(res => {
               res.errno && console.log(res.sqlMessage)
-              this.$emit('close', !res.errno)
-            }).catch(err => console.log(err))
+              this.reset(!res.errno)
+            })
           } else {
             console.log('error submit!!')
             return false
