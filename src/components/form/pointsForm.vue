@@ -57,13 +57,14 @@
 
       <el-form-item v-if="type !== 'view'">
         <el-button type="primary" @click="onSubmit">{{ id ? '保存' : '新建'}}</el-button>
-        <el-button @click="$emit('close', false)">取消</el-button>
+        <el-button @click="reset(false)">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script>
+  import ajax from '@/apis'
   import axios from 'axios'
 
   export default {
@@ -100,7 +101,7 @@
           monitor_code: [{ required: true, message: '请输入LORA代码', trigger: 'blur' }],
           // lower_limit: [{ required: true, message: '请输入端口名称', trigger: 'blur' }],
           // upper_limit: [{ required: true, type: 'number', message: '请输入端口', trigger: 'blur' }],
-          // stop_bit: [{ required: true, type: 'number', message: '请输入其他配置', trigger: 'blur' }],
+          // stop_bit: [{ required: true, type: 'number', message: '请输入停止位', trigger: 'blur' }],
           channel_count: [{ required: true, type: 'number', message: '请输入通道数量', trigger: 'blur' }]
         }
       }
@@ -111,15 +112,18 @@
       }
     },
     methods: {
-      reset () {
+      reset (flag) {
+        this.form.id = ''
+        this.$emit('close', flag, this.type)
         this.$refs.form.resetFields()
       },
       fetchMonitors () {
-        axios.get(`/api/monitors?projectCode=${this.projectCode === null ? '' : this.projectCode}`).then(res => {
+        let projectCode = (this.projectCode === null) ? '' : this.projectCode
+        ajax('get monitors', { projectCode }).then(res => {
           this.monitors = res.data.map(item => {
             return { label: item.monitor_name, value: item.monitor_code, children: [] }
           })
-        }).catch(err => console.log(err))
+        })
       },
       fetchBuildingUnits (monitorCode) {
         axios.get(`/api/monitors/${monitorCode}/buildingunits`).then(res => {
@@ -134,31 +138,28 @@
         this.fetchBuildingUnits(codes[0])
       },
       fetchMonitor (id) {
-        axios.get(`/api/points/${id}`).then(res => {
+        ajax('get point', { id }).then(res => {
           if (res.data) {
             this.form = Object.assign({}, res.data, {codes: []})
             this.form.codes.push(this.form.monitor_code)
             this.fetchBuildingUnits(this.form.monitor_code)
           }
-        }).catch(err => console.log(err))
+        })
       },
       onSubmit () {
         this.$refs.form.validate((valid) => {
           if (valid) {
-            let formData = Object.assign({}, this.form, { 'unit_id': this.unitId })
+            let formData = Object.assign({}, this.form, { id: this.id, 'unit_id': this.unitId })
             if (this.unitId === null) {
               formData.monitor_code = formData.codes[0]
               formData.unit_id = formData.codes[1]
             }
             delete formData.codes
-            axios({
-              url: `/api/points/${this.id}`,
-              method: this.type === 'create' ? 'post' : 'put',
-              data: formData
-            }).then(res => {
+            const api = (this.type === 'create') ? 'post point' : 'put point'
+            ajax(api, formData).then(res => {
               res.errno && console.log(res.sqlMessage)
-              this.$emit('close', !res.errno)
-            }).catch(err => console.log(err))
+              this.reset(!res.errno)
+            })
           } else {
             console.log('error submit!!')
             return false

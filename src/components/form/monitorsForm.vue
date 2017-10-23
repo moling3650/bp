@@ -27,7 +27,7 @@
         <el-input v-model="form.baud_rate" :disabled="type === 'view'"/>
       </el-form-item>
 
-      <el-form-item label="其他配置" prop="stop_bit">
+      <el-form-item label="停止位" prop="stop_bit">
         <el-input v-model="form.stop_bit" :disabled="type === 'view'"/>
       </el-form-item>
 
@@ -86,7 +86,7 @@
           // codes: [{ required: true, message: '请选择项目/上位机', trigger: 'blur' }],
           // port_name: [{ required: true, message: '请输入端口名称', trigger: 'blur' }],
           // baud_rate: [{ required: true, type: 'number', message: '请输入端口', trigger: 'blur' }],
-          // stop_bit: [{ required: true, type: 'number', message: '请输入其他配置', trigger: 'blur' }],
+          // stop_bit: [{ required: true, type: 'number', message: '请输入停止位', trigger: 'blur' }],
           // channel_count: [{ required: true, type: 'number', message: '请输入通道数量', trigger: 'blur' }]
         }
       }

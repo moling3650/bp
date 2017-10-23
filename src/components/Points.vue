@@ -10,10 +10,10 @@
       <el-table-column align="center" label="LORA代码" prop="monitor_code"/>
       <el-table-column align="center" label="通道序号" prop="channel_index"/>
       <el-table-column align="center" label="监测单元" prop="unit_id"/>
-      <el-table-column align="center" label="信号类型" prop="signal_type"/>
+      <el-table-column align="center" label="信号类型" prop="signal_type" :formatter="fmtSignalType"/>
       <el-table-column align="center" label="上限" prop="upper_limit"/>
       <el-table-column align="center" label="下限" prop="lower_limit"/>
-      <el-table-column align="center" label="状态" prop="state"/>
+      <el-table-column align="center" label="状态" prop="state" :formatter="fmtState"/>
       <el-table-column align="center" label="创建时间" prop="create_date" :formatter="fmtDate"/>
       <el-table-column align="center" label="操作" width="200">
         <template slot-scope="scope">
@@ -49,7 +49,7 @@
     },
     methods: {
       resetForm (done) {
-        this.$refs.form.reset()
+        this.$refs.form.reset(false)
         done()
       },
       openDialog (type, monitorId) {
@@ -57,15 +57,22 @@
         this.monitorId = monitorId
         this.dialogFormVisible = true
       },
-      closeDialog (flag) {
+      closeDialog (flag, type) {
+        const action = (type === 'create') ? '新建' : '编辑'
         if (flag) {
           this.fetchTableData()
-          this.$message({ type: 'success', message: '编辑成功' })
+          this.$message({ type: 'success', message: `${action}成功` })
         } else {
-          this.$message({ type: 'info', message: '已取消编辑' })
+          this.$message({ type: 'info', message: `已取消${action}` })
         }
         this.monitorId = ''
         this.dialogFormVisible = false
+      },
+      fmtSignalType (row, column, signalType) {
+        return ['正弦', '热敏', '0~5V', '4~20MA'][signalType]
+      },
+      fmtState (row, column, state) {
+        return ['关', '开'][state]
       },
       fmtDate (row, column, dateStr) {
         return dateStr ? dateStr.replace(/(\d{4}-\d{2}-\d{2}).*?(\d{2}:\d{2}).*/, '$1 $2') : ''
