@@ -45,7 +45,7 @@
     },
     methods: {
       resetForm (done) {
-        this.$refs.form.reset()
+        this.$refs.form.reset(false)
         done()
       },
       openDialog (type, buildingId) {
@@ -53,12 +53,13 @@
         this.buildingId = buildingId
         this.dialogFormVisible = true
       },
-      closeDialog (flag) {
+      closeDialog (flag, type) {
+        const action = (type === 'create') ? '新建' : '编辑'
         if (flag) {
           this.fetchTableData()
-          this.$message({ type: 'success', message: '编辑成功' })
+          this.$message({ type: 'success', message: `${action}成功` })
         } else {
-          this.$message({ type: 'info', message: '已取消编辑' })
+          this.$message({ type: 'info', message: `已取消${action}` })
         }
         this.buildingId = ''
         this.dialogFormVisible = false

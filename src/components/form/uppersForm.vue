@@ -30,14 +30,14 @@
 
       <el-form-item>
         <el-button type="primary" @click="onSubmit">{{ id ? '保存' : '新建'}}</el-button>
-        <el-button @click="$emit('close', false)">取消</el-button>
+        <el-button @click="reset(false)">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script>
-  import axios from 'axios'
+  import ajax from '@/apis'
 
   export default {
     name: 'uppersForm',
@@ -73,37 +73,36 @@
       }
     },
     methods: {
-      reset () {
+      reset (flag) {
+        this.form.id = ''
+        this.$emit('close', flag, this.type)
         this.$refs.form.resetFields()
       },
       fetchProjects () {
-        axios.get('/api/projects').then(res => {
+        ajax('get projects').then(res => {
           this.projects = res.data.map(item => {
             return { name: item.project_name, code: item.project_code }
           })
           if (this.projects.length > 0) {
             this.form.project_code = this.projects[0].code
           }
-        }).catch(err => console.log(err))
+        })
       },
       fetchUpper (id) {
-        axios.get(`/api/uppers/${id}`).then(res => {
+        ajax('get upper', { id }).then(res => {
           if (res.data) {
             this.form = res.data
           }
-        }).catch(err => console.log(err))
+        })
       },
       onSubmit () {
         this.$refs.form.validate((valid) => {
           if (valid) {
-            axios({
-              url: `/api/uppers/${this.id}`,
-              method: this.type === 'create' ? 'post' : 'put',
-              data: this.form
-            }).then(res => {
+            const api = (this.type === 'create') ? 'post upper' : 'put upper'
+            ajax(api, this.form).then(res => {
               res.errno && console.log(res.sqlMessage)
-              this.$emit('close', !res.errno)
-            }).catch(err => console.log(err))
+              this.reset(!res.errno)
+            })
           } else {
             console.log('error submit!!')
             return false
