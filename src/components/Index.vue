@@ -111,19 +111,6 @@
 </script>
 
 <style lang="css" scoped>
-  .title {
-    margin: 15px 0 10px 0;
-    font-size: 20px;
-    font-weight: bold;
-    text-align: center;
-  }
-
-  .button-group {
-    margin-right: 10px;
-    margin-bottom: 10px;
-    text-align: right;
-  }
-
   .popover-detail {
     font-size: 16px;
     line-height: 1.5;

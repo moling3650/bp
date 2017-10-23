@@ -25,4 +25,10 @@
     font-weight: bold;
     text-align: center;
   }
+
+  .button-group, .btn-add {
+    margin-right: 10px;
+    margin-bottom: 10px;
+    text-align: right;
+  }
 </style>

@@ -96,15 +96,4 @@
 </script>
 
 <style lang="css" scoped>
-  .title {
-    margin: 15px 0 10px 0;
-    font-size: 20px;
-    font-weight: bold;
-    text-align: center;
-  }
-
-  .btn-add {
-    margin-bottom: 5px;
-    text-align: right;
-  }
 </style>
