@@ -34,7 +34,7 @@
 
       <el-col :span="12" :offset="2">
         <component class="form" v-if="formId !== null" type="edit" key="editForm" :is="type + 'sForm'" :id="formId"
-          :projectCode="projectCode" :buildingCode="buildingCode" :unitId="unitId" @close="closeForm"
+          :projectCode="projectCode" :buildingCode="buildingCode" :unitId="unitId" @close="closeForm" :isReset="false"
         />
       </el-col>
     </el-row>
