@@ -53,10 +53,7 @@
     },
     data () {
       var checkProjectCode = (rule, value, callback) => {
-        if (this.type !== 'create') {
-          return callback()
-        }
-        codeValidator('project', value, callback)
+        (this.type !== 'create') ? callback() : codeValidator('project', value, callback)
       }
       return {
         form: {

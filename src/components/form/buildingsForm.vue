@@ -45,6 +45,7 @@
 
 <script>
   import ajax from '@/apis'
+  import { codeValidator } from '@/apis/validators'
 
   export default {
     name: 'buildingsForm',
@@ -61,6 +62,9 @@
       }
     },
     data () {
+      var checkBuildingCode = (rule, value, callback) => {
+        (this.type !== 'create') ? callback() : codeValidator('building', value, callback)
+      }
       return {
         projects: [],
         form: {
@@ -71,7 +75,7 @@
           remark: ''
         },
         rules: {
-          building_code: [{ required: true, message: '请输入建筑代码', trigger: 'blur' }],
+          building_code: [{ required: true, validator: checkBuildingCode, trigger: 'blur' }],
           building_name: [{ required: true, message: '请输入建筑名称', trigger: 'blur' }],
           type: [{ required: true, type: 'number', message: '请选择建筑类型', trigger: 'change' }],
           project_code: [{ required: true, message: '请选择项目', trigger: 'change' }]
