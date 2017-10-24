@@ -39,6 +39,7 @@
 
 <script>
   import ajax from '@/apis'
+  import { codeValidator } from '@/apis/validators'
 
   export default {
     name: 'projectsForm',
@@ -55,18 +56,7 @@
         if (this.type !== 'create') {
           return callback()
         }
-        if (!value) {
-          return callback(new Error('请输入项目代码'))
-        }
-        if (!/\w{4,16}$/.test(value)) {
-          return callback(new Error('请输入4至16位的英文、数字或下划线'))
-        }
-        ajax('get projects', { projectCode: value }).then(res => {
-          if (res.data.length) {
-            throw new Error('项目代码已占用')
-          }
-          callback()
-        }).catch(err => callback(err))
+        codeValidator('project', value, callback)
       }
       return {
         form: {
