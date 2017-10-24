@@ -53,6 +53,7 @@
 
 <script>
   import ajax from '@/apis'
+  import { codeValidator } from '@/apis/validators'
   import axios from 'axios'
 
   export default {
@@ -66,6 +67,9 @@
       }
     },
     data () {
+      var checkMonitorCode = (rule, value, callback) => {
+        (this.type !== 'create') ? callback() : codeValidator('monitor', value, callback)
+      }
       return {
         projects: [],
         form: {
@@ -81,7 +85,7 @@
           remark: ''
         },
         rules: {
-          monitor_code: [{ required: true, message: '请输入LORA代码', trigger: 'blur' }],
+          monitor_code: [{ required: true, validator: checkMonitorCode, trigger: 'blur' }],
           monitor_name: [{ required: true, message: '请输入LORA名称', trigger: 'blur' }]
           // codes: [{ required: true, message: '请选择项目/上位机', trigger: 'blur' }],
           // port_name: [{ required: true, message: '请输入端口名称', trigger: 'blur' }],
