@@ -44,6 +44,10 @@
       buildingCode: {
         type: String,
         default: null
+      },
+      isReset: {
+        type: Boolean,
+        default: true
       }
     },
     data () {
@@ -94,7 +98,7 @@
             const api = (this.type === 'create') ? 'post buildingunit' : 'put buildingunit'
             ajax(api, this.form).then(res => {
               res.errno && console.log(res.sqlMessage)
-              this.reset(!res.errno)
+              this.isReset ? this.reset(!res.errno) : this.$emit('close', !res.errno, this.type, this.form.unit_name)
             })
           } else {
             console.log('error submit!!')

@@ -38,6 +38,7 @@
 
 <script>
   import ajax from '@/apis'
+  import { codeValidator } from '@/apis/validators'
 
   export default {
     name: 'uppersForm',
@@ -50,6 +51,9 @@
       }
     },
     data () {
+      var checkUpperCode = (rule, value, callback) => {
+        (this.type !== 'create') ? callback() : codeValidator('upper', value, callback)
+      }
       return {
         projects: [],
         form: {
@@ -60,7 +64,7 @@
           remark: ''
         },
         rules: {
-          upper_code: [{ required: true, message: '请输入上位机代码', trigger: 'blur' }],
+          upper_code: [{ required: true, validator: checkUpperCode, trigger: 'blur' }],
           upper_name: [{ required: true, message: '请输入上位机名称', trigger: 'blur' }],
           state: [{ required: true, type: 'number', message: '请选择类型', trigger: 'blur' }],
           project_code: [{ required: true, message: '请选择项目', trigger: 'change' }]

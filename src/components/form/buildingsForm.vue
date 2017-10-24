@@ -121,7 +121,6 @@
             let api = (this.type === 'create') ? 'post building' : 'put building'
             ajax(api, this.form).then(res => {
               res.errno && console.log(res.sqlMessage)
-              // this.reset(!res.errno)
               this.isReset ? this.reset(!res.errno) : this.$emit('close', !res.errno, this.type, this.form.building_name)
             })
           } else {
