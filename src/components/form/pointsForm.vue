@@ -2,8 +2,8 @@
   <div class="points-form">
     <el-form ref="form" :model="form" :rules="rules" label-width="130px">
 
-      <el-form-item label="通道序号" prop="channel_index">
-        <el-select v-model="form.channel_index" placeholder="请选择通道序号" :disabled="type === 'view'">
+      <el-form-item label="通道序号" prop="channel_idx">
+        <el-select v-model="form.channel_idx" placeholder="请选择通道序号" :disabled="type === 'view'">
           <el-option
             v-for="index in 8"
             :key="index"
@@ -89,7 +89,7 @@
       return {
         monitors: [],
         form: {
-          channel_index: 1,
+          channel_idx: 1,
           codes: [],
           monitor_code: '',
           signal_type: 0,

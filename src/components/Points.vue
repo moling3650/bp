@@ -8,7 +8,7 @@
 
     <el-table :data="tableData" border style="width: 100%">
       <el-table-column align="center" label="LORA代码" prop="monitor_code"/>
-      <el-table-column align="center" label="通道序号" prop="channel_index"/>
+      <el-table-column align="center" label="通道序号" prop="channel_idx"/>
       <el-table-column align="center" label="监测单元" prop="unit_id"/>
       <el-table-column align="center" label="信号类型" prop="signal_type" :formatter="fmtSignalType"/>
       <el-table-column align="center" label="上限" prop="upper_limit"/>

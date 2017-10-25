@@ -11,6 +11,20 @@ axios.interceptors.request.use(function (config) {
 
 axios.interceptors.response.use(function (response) {
   // 对响应数据做点什么
+  console.log(response)
+  response.errno = !response.data.IsTrue
+  response.sqlMessage = response.data.MessageStr
+  let data = response.data.ReturnValue ? JSON.parse(response.data.ReturnValue) : []
+  if (Array.isArray(data)) {
+    data.map(item => {
+      delete item.$id
+      delete item.EntityKey
+    })
+  } else if (data) {
+    delete data.$id
+    delete data.EntityKey
+  }
+  response.data = data
   return response
 }, function (error) {
   // 对响应错误做点什么
@@ -18,20 +32,34 @@ axios.interceptors.response.use(function (response) {
   return Promise.reject(error)
 })
 
+const SpcMap = {
+  project: 'XJBLL.ProjectBLL',
+  building: 'XJBLL.BuildingBLL',
+  buildingUnit: 'XJBLL.BuildUnitBLL',
+  upper: 'XJBLL.UpperMonitorBLL',
+  monitor: 'XJBLL.MonitorBLL',
+  point: 'XJBLL.PointBLL'
+}
+
 const ajax = function (api, data = null) {
   if (!/^(get|post|put|delete) .+?$/i.test(api)) {
     return Promise.reject(new Error('api must be "[get|post|put|delete] model"'))
   }
   let [method, model] = api.split(/[ -_]+/, 2)
-  if (!model.endsWith('s')) {
-    model += 's'
+
+  let params = {
+    spc: SpcMap[model.endsWith('s') ? model.substr(0, model.length - 1) : model]
+  }
+  if (method === 'get' && model.endsWith('s')) {
+    params.api = 'GetALL'
   }
 
+  method = (method === 'get') ? 'get' : 'post'
   const config = {
     method,
-    url: `/api/${model}${(data && data.id) ? ('/' + data.id) : ''}`,
-    params: /^get$/i.test(method) ? data : null,
-    data: /^get$/i.test(method) ? null : data
+    url: '/ExecServerAPI.ashx',
+    params,
+    data
   }
 
   return axios(config)
