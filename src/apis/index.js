@@ -11,7 +11,6 @@ axios.interceptors.request.use(function (config) {
 
 axios.interceptors.response.use(function (response) {
   // 对响应数据做点什么
-  console.log(response)
   response.errno = !response.data.IsTrue
   response.sqlMessage = response.data.MessageStr
   let data = response.data.ReturnValue ? JSON.parse(response.data.ReturnValue) : []
@@ -46,20 +45,28 @@ const ajax = function (api, data = null) {
     return Promise.reject(new Error('api must be "[get|post|put|delete] model"'))
   }
   let [method, model] = api.split(/[ -_]+/, 2)
+  method = method.toLowerCase()
+  model = model.toLowerCase()
 
   let params = {
     spc: SpcMap[model.endsWith('s') ? model.substr(0, model.length - 1) : model]
   }
   if (method === 'get' && model.endsWith('s')) {
     params.api = 'GetALL'
+  } else if (method === 'post' || method === 'put') {
+    params.api = (method === 'post') ? 'Add' : 'Update'
+    if (method === 'post') {
+      delete data.id
+      data.create_date = new Date()
+    }
+    params.param = JSON.stringify(data)
   }
 
-  method = (method === 'get') ? 'get' : 'post'
+  method = 'get'
   const config = {
     method,
     url: '/ExecServerAPI.ashx',
-    params,
-    data
+    params
   }
 
   return axios(config)
