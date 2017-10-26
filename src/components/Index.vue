@@ -90,7 +90,7 @@
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }).then(() => ajax('delete project', { id })
+        }).then(() => ajax('delete project', id)
         ).then(res => {
           this.fetchTableData()
           this.$message({ type: 'success', message: '删除成功' })

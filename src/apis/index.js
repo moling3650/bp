@@ -53,14 +53,16 @@ const ajax = function (api, data = null) {
   }
   if (method === 'get' && model.endsWith('s')) {
     params.api = 'GetALL'
-  } else if (method === 'post' || method === 'put') {
-    params.api = (method === 'post') ? 'Add' : 'Update'
-    if (method === 'post') {
-      delete data.id
-      data.create_date = new Date()
-    }
-    params.param = JSON.stringify(data)
+  } else if (method === 'post') {
+    params.api = 'Add'
+    delete data.id
+    data.create_date = new Date().toJSON()
+  } else if (method === 'put') {
+    params.api = 'Update'
+  } else if (method === 'delete') {
+    params.api = 'Delete'
   }
+  params.param = JSON.stringify(data)
 
   method = 'get'
   const config = {
