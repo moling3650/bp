@@ -18,7 +18,7 @@
 
         <el-button-group style="float: right;">
           <el-button type="success" @click="addBuilding">新增建筑</el-button>
-          <el-button type="danger">删除</el-button>
+          <el-button type="danger" @click="deleteItem">删除</el-button>
         </el-button-group>
 
         <el-tree
@@ -48,11 +48,9 @@
 </template>
 
 <script>
-  import axios from 'axios'
-  // import projectsForm from '@/components/form/projectsForm'
+  import ajax from '@/apis'
   import buildingsForm from '@/components/form/buildingsForm'
   import buildingUnitsForm from '@/components/form/buildingUnitsForm'
-  // import pointsForm from '@/components/form/pointsForm'
 
   export default {
     name: 'ManageBuildings',
@@ -70,10 +68,8 @@
       }
     },
     components: {
-      // projectsForm,
       buildingsForm,
       buildingUnitsForm
-      // pointsForm
     },
     methods: {
       addBuilding () {
@@ -81,6 +77,23 @@
           this.dialogFormVisible = true
         } else {
           this.$message({ type: 'info', message: '先选择一个项目' })
+        }
+      },
+      deleteItem () {
+        const bIndex = this.treeData.findIndex(item => item.value === this.buildingCode)
+        if (this.type === 'building') {
+          this.$confirm('此操作将永久删除该建筑, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => ajax('delete building', this.formId)
+          ).then(res => {
+            this.treeData.splice(bIndex, 1)
+            this.formId = null
+            this.$message({ showClose: true, type: 'success', message: '删除成功!' })
+          }).catch(() => {
+            this.$message({ showClose: true, type: 'info', message: '已取消删除' })
+          })
         }
       },
       resetForm (done) {
@@ -116,39 +129,33 @@
         } else if (node.data.type === 'building') {
           this.fetchBuildingUnits(node.data.value).then(nodes => resolve(nodes))
         }
-        // else if (node.data.type === 'buildingUnit') {
-        //   this.fetchPoints(node.data.value).then(nodes => resolve(nodes))
-        // }
         return resolve([])
       },
       projectChange (projectCode) {
+        this.projectCode = projectCode
         this.fetchBuildings(projectCode).then(data => {
           this.treeData = data
         })
       },
       fetchProjects () {
-        axios.get(`/api/projects`).then(res => {
+        ajax('get projects').then(res => {
           this.projects = res.data.map(item => {
             return {
               code: item.project_code,
               name: item.project_name
             }
           })
-        }).catch(err => console.log(err))
+        })
       },
       fetchProject (projectId) {
-        axios.get(`/api/projects/${projectId}`).then(res => {
-          this.projectCode = res.data.project_code
-          // this.treeData = [{
-          //   type: 'project',
-          //   id: res.data.id,
-          //   label: res.data.project_name,
-          //   value: res.data.project_code
-          // }]
-        }).catch(err => console.log(err))
+        if (projectId !== 'admin') {
+          ajax('get project', projectId).then(res => {
+            this.projectCode = res.data.project_code
+          })
+        }
       },
       fetchBuildings (projectCode) {
-        return axios.get(`/api/buildings?projectCode=${projectCode}`).then(res => {
+        return ajax('get buildings by projectCode', projectCode).then(res => {
           return res.data.map(item => {
             return {
               type: 'building',
@@ -160,7 +167,7 @@
         })
       },
       fetchBuildingUnits (buildingCode) {
-        return axios.get(`/api/buildingunits?buildingCode=${buildingCode}`).then(res => {
+        return ajax('get buildingUnits by buildingCode', buildingCode).then(res => {
           return res.data.map(item => {
             return {
               type: 'buildingUnit',
@@ -171,18 +178,6 @@
           })
         })
       },
-      // fetchPoints (unitId) {
-      //   return axios.get(`/api/points?unitId=${unitId}`).then(res => {
-      //     return res.data.map(item => {
-      //       return {
-      //         type: 'point',
-      //         id: item.id,
-      //         label: `节点 － ${item.id}`,
-      //         value: item.id
-      //       }
-      //     })
-      //   })
-      // },
       init () {
         this.fetchProjects()
         this.fetchProject(this.$route.params.projectId)

@@ -52,6 +52,8 @@ const ajax = function (api, data = null) {
   }
   if (api.endsWith('projectCode')) {
     params.api = 'GetByProject'
+  } else if (api.endsWith('buildingCode')) {
+    params.api = 'GetByBuilding'
   } else if (api.endsWith('monitorCode')) {
     params.api = 'GetByMonitor'
   } else if (api.endsWith('code')) {
