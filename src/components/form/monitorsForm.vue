@@ -54,7 +54,6 @@
 <script>
   import ajax from '@/apis'
   import { codeValidator } from '@/apis/validators'
-  import axios from 'axios'
 
   export default {
     name: 'monitorsForm',
@@ -114,7 +113,7 @@
         })
       },
       fetchUppers (projectCode) {
-        axios.get(`/api/projects/${projectCode}/uppers`).then(res => {
+        ajax('get uppers by projectCode', projectCode).then(res => {
           const index = this.projects.findIndex(p => p.value === projectCode)
           if (~index) {
             this.projects[index].children = res.data

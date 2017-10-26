@@ -50,7 +50,11 @@ const ajax = function (api, data = null) {
   let params = {
     spc: SpcMap[model.endsWith('s') ? model.substr(0, model.length - 1) : model]
   }
-  if (method === 'get' && model.endsWith('s')) {
+  if (api === 'get uppers by projectCode') {
+    params.api = 'GetByProjectCode'
+  } else if (api.endsWith('code')) {
+    params.api = 'GetByCode'
+  } else if (method === 'get' && model.endsWith('s')) {
     params.api = 'GetALL'
   } else if (method === 'get' && ~Object.keys(SpcMap).indexOf(model)) {
     params.api = 'GetByID'
@@ -65,7 +69,7 @@ const ajax = function (api, data = null) {
   }
 
   if (data) {
-    params.param = JSON.stringify(data)
+    params.param = (typeof data === 'string') ? data : JSON.stringify(data)
   }
   console.log(params)
   method = 'get'
