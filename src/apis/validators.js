@@ -12,8 +12,8 @@ const codeValidator = (type, value, callback) => {
   if (!value) {
     return callback(new Error(`请输入${TypeMap[type]}代码`))
   }
-  if (!/\w{4,16}$/.test(value)) {
-    return callback(new Error('请输入4至16位的英文、数字或下划线'))
+  if (!/[\w-]{4,32}$/.test(value)) {
+    return callback(new Error('请输入4至32位的英文、数字或中下划线'))
   }
   let params = {}
   params[`${type}Code`] = value
