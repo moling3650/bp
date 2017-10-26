@@ -71,7 +71,7 @@
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }).then(() => ajax('delete buildingunit', id)
+        }).then(() => ajax('delete buildingUnit', id)
         ).then(res => {
           this.fetchTableData()
           this.$message({ type: 'success', message: '删除成功!' })
@@ -80,7 +80,7 @@
         })
       },
       fetchTableData () {
-        ajax('get buildingunits').then(res => {
+        ajax('get buildingUnits').then(res => {
           this.tableData = res.data
         })
       }

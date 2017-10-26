@@ -86,7 +86,7 @@
         })
       },
       fetchBuildingUnit (id) {
-        ajax('get buildingunit', { id }).then(res => {
+        ajax('get buildingUnit', { id }).then(res => {
           if (res.data) {
             this.form = res.data
           }
@@ -95,7 +95,7 @@
       onSubmit () {
         this.$refs.form.validate((valid) => {
           if (valid) {
-            const api = (this.type === 'create') ? 'post buildingunit' : 'put buildingunit'
+            const api = (this.type === 'create') ? 'post buildingUnit' : 'put buildingUnit'
             ajax(api, this.form).then(res => {
               res.errno && console.log(res.sqlMessage)
               this.isReset ? this.reset(!res.errno) : this.$emit('close', !res.errno, this.type, this.form.unit_name)

@@ -44,9 +44,8 @@ const ajax = function (api, data = null) {
   if (!/^(get|post|put|delete) .+?$/i.test(api)) {
     return Promise.reject(new Error('api must be "[get|post|put|delete] model"'))
   }
-  let [method, model] = api.split(/[ -_]+/, 2)
-  method = method.toLowerCase()
-  model = model.toLowerCase()
+  let [method, model] = api.split(' ')
+  console.log('method: ', method, ' | model: ', model)
 
   let params = {
     spc: SpcMap[model.endsWith('s') ? model.substr(0, model.length - 1) : model]
@@ -62,8 +61,11 @@ const ajax = function (api, data = null) {
   } else if (method === 'delete') {
     params.api = 'Delete'
   }
-  params.param = JSON.stringify(data)
 
+  if (data) {
+    params.param = JSON.stringify(data)
+  }
+  console.log(params)
   method = 'get'
   const config = {
     method,
