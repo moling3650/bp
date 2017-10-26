@@ -2,7 +2,7 @@
   <div class="points-form">
     <el-form ref="form" :model="form" :rules="rules" label-width="130px">
 
-      <el-form-item label="通道序号" prop="channel_idx">
+      <el-form-item label="通道序号" prop="channel_idx" required>
         <el-select v-model="form.channel_idx" placeholder="请选择通道序号" :disabled="type === 'view'">
           <el-option
             v-for="index in 8"
@@ -12,7 +12,7 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item  v-if="!projectCode" label="LORA/监测单元" prop="codes">
+      <el-form-item  v-if="!projectCode" label="LORA/监测单元" prop="codes" required>
         <el-cascader
           :options="monitors"
           v-model="form.codes"
@@ -32,7 +32,7 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="信号类型" prop="signal_type">
+      <el-form-item label="信号类型" prop="signal_type" required>
         <el-select v-model="form.signal_type" placeholder="请选择信号类型" :disabled="type === 'view'">
           <el-option
             v-for="(item, index) in ['正弦', '热敏', '0~5V', '4~20MA']"
@@ -65,7 +65,6 @@
 
 <script>
   import ajax from '@/apis'
-  import axios from 'axios'
 
   export default {
     name: 'pointsForm',
@@ -118,15 +117,18 @@
         this.$refs.form.resetFields()
       },
       fetchMonitors () {
-        let projectCode = (this.projectCode === null) ? '' : this.projectCode
-        ajax('get monitors', { projectCode }).then(res => {
+        let api = 'get monitors'
+        if (this.projectCode) {
+          api += ' by projectCode'
+        }
+        ajax(api, this.projectCode).then(res => {
           this.monitors = res.data.map(item => {
             return { label: item.monitor_name, value: item.monitor_code, children: [] }
           })
         })
       },
       fetchBuildingUnits (monitorCode) {
-        axios.get(`/api/monitors/${monitorCode}/buildingunits`).then(res => {
+        ajax('get buildingUnits by monitorCode', monitorCode).then(res => {
           const index = this.monitors.findIndex(p => p.value === monitorCode)
           if (~index) {
             this.monitors[index].children = res.data

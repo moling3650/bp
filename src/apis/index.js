@@ -50,8 +50,10 @@ const ajax = function (api, data = null) {
   let params = {
     spc: SpcMap[model.endsWith('s') ? model.substr(0, model.length - 1) : model]
   }
-  if (api === 'get uppers by projectCode') {
-    params.api = 'GetByProjectCode'
+  if (api.endsWith('projectCode')) {
+    params.api = 'GetByProject'
+  } else if (api.endsWith('monitorCode')) {
+    params.api = 'GetByMonitor'
   } else if (api.endsWith('code')) {
     params.api = 'GetByCode'
   } else if (method === 'get' && model.endsWith('s')) {
