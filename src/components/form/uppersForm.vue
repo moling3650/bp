@@ -93,7 +93,7 @@
         })
       },
       fetchUpper (id) {
-        ajax('get upper', { id }).then(res => {
+        ajax('get upper', id).then(res => {
           if (res.data) {
             this.form = res.data
           }

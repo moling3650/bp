@@ -108,7 +108,7 @@
         })
       },
       fetchBuilding (id) {
-        ajax('get building', { id }).then(res => {
+        ajax('get building', id).then(res => {
           if (res.data) {
             this.$refs.form.resetFields()
             this.form = res.data

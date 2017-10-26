@@ -86,7 +86,7 @@
         })
       },
       fetchBuildingUnit (id) {
-        ajax('get buildingUnit', { id }).then(res => {
+        ajax('get buildingUnit', id).then(res => {
           if (res.data) {
             this.form = res.data
           }

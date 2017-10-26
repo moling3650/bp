@@ -52,6 +52,8 @@ const ajax = function (api, data = null) {
   }
   if (method === 'get' && model.endsWith('s')) {
     params.api = 'GetALL'
+  } else if (method === 'get' && ~Object.keys(SpcMap).indexOf(model)) {
+    params.api = 'GetByID'
   } else if (method === 'post') {
     params.api = 'Add'
     delete data.id

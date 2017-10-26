@@ -138,7 +138,7 @@
         this.fetchBuildingUnits(codes[0])
       },
       fetchMonitor (id) {
-        ajax('get point', { id }).then(res => {
+        ajax('get point', id).then(res => {
           if (res.data) {
             this.form = Object.assign({}, res.data, {codes: []})
             this.form.codes.push(this.form.monitor_code)

@@ -126,7 +126,7 @@
         this.fetchUppers(codes[0])
       },
       fetchMonitor (id) {
-        ajax('get monitor', { id }).then(res => {
+        ajax('get monitor', id).then(res => {
           if (res.data) {
             delete res.data.id
             this.form = Object.assign({}, res.data, {codes: []})

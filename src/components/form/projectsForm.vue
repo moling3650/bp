@@ -88,7 +88,7 @@
         this.$refs.form.resetFields()
       },
       fetchProject (id) {
-        ajax('get project', { id }).then(res => {
+        ajax('get project', id).then(res => {
           if (res.data) {
             this.form = res.data
           }
