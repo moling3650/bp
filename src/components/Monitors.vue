@@ -12,11 +12,11 @@
       <el-table-column align="center" label="所属项目" prop="project_code"/>
       <el-table-column align="center" label="所属上位机" prop="upper_code"/>
       <el-table-column align="center" label="端口名称" prop="port_name"/>
-      <el-table-column align="center" label="端口" prop="baud_rate"/>
-      <el-table-column align="center" label="停止位" prop="stop_bit"/>
-      <el-table-column align="center" label="奇偶校验" prop="parity_check"/>
-      <el-table-column align="center" label="通道数量" prop="channel_count"/>
-      <el-table-column align="center" label="创建时间" prop="create_date" :formatter="fmtDate"/>
+      <el-table-column align="center" label="端口" prop="baud_rate" width="80"/>
+      <el-table-column align="center" label="停止位" prop="stop_bit" width="80"/>
+      <el-table-column align="center" label="奇偶校验" prop="parity_check" width="100"/>
+      <el-table-column align="center" label="通道数量" prop="channel_count" width="100"/>
+      <el-table-column align="center" label="创建时间" prop="create_date" width="160" :formatter="fmtDate"/>
       <el-table-column align="center" label="操作" width="200">
         <template slot-scope="scope">
           <el-button size="small" @click="openDialog('view', scope.row.id)">查看</el-button>

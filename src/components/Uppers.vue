@@ -11,7 +11,7 @@
       <el-table-column align="center" label="上位机名称" prop="upper_name"/>
       <el-table-column align="center" label="所属项目" prop="project_code"/>
       <el-table-column align="center" label="状态" prop="state" :formatter="fmtState"/>
-      <el-table-column align="center" label="创建时间" prop="create_date" :formatter="fmtDate"/>
+      <el-table-column align="center" label="创建时间" prop="create_date" width="160" :formatter="fmtDate"/>
       <el-table-column align="center" label="操作" width="200">
         <template slot-scope="scope">
           <el-button size="small" @click="openDialog('edit', scope.row.id)">编辑</el-button>

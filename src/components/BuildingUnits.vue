@@ -9,7 +9,7 @@
     <el-table :data="tableData" border style="width: 100%">
       <el-table-column align="center" label="建筑单元名称" prop="unit_name"/>
       <el-table-column align="center" label="所属建筑" prop="building_code"/>
-      <el-table-column align="center" label="创建时间" prop="create_date" :formatter="fmtDate"/>
+      <el-table-column align="center" label="创建时间" prop="create_date" width="160" :formatter="fmtDate"/>
       <el-table-column align="center" label="操作" width="200">
         <template slot-scope="scope">
           <el-button size="small" @click="openDialog('view', scope.row.id)">查看</el-button>

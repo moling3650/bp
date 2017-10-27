@@ -18,7 +18,7 @@
 
         <el-button-group style="float: right;">
           <el-button type="success" @click="addBuilding">新增建筑</el-button>
-          <el-button type="danger" @click="deleteItem">删除</el-button>
+          <el-button type="danger" @click="deleteItem">删除建筑</el-button>
         </el-button-group>
 
         <el-tree
@@ -81,7 +81,7 @@
         }
       },
       deleteItem () {
-        if (!this.formId) {
+        if (this.type !== 'building' && !this.formId) {
           return void this.$message({ showClose: true, type: 'info', message: '先选择一个建筑' })
         }
         const bIndex = this.treeData.findIndex(item => item.value === this.buildingCode)
