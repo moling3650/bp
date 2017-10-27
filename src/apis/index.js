@@ -66,7 +66,7 @@ const ajax = function (api, data = null) {
   } else if (method === 'post') {
     params.api = 'Add'
     delete data.id
-    // data.create_date = new Date().toJSON()
+    data.create_date = new Date(Date.now() + 8 * 3600 * 1000).toJSON()
   } else if (method === 'put') {
     params.api = 'Update'
   } else if (method === 'delete') {
