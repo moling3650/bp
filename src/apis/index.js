@@ -32,12 +32,13 @@ axios.interceptors.response.use(function (response) {
 })
 
 const SpcMap = {
-  project: 'XJBLL.ProjectBLL',
-  building: 'XJBLL.BuildingBLL',
-  buildingUnit: 'XJBLL.BuildUnitBLL',
-  upper: 'XJBLL.UpperMonitorBLL',
-  monitor: 'XJBLL.MonitorBLL',
-  point: 'XJBLL.PointBLL'
+  projects: 'XJBLL.ProjectBLL',
+  buildings: 'XJBLL.BuildingBLL',
+  buildingUnits: 'XJBLL.BuildUnitBLL',
+  uppers: 'XJBLL.UpperMonitorBLL',
+  monitors: 'XJBLL.MonitorBLL',
+  points: 'XJBLL.PointBLL',
+  cities: 'XJBLL.CityBLL'
 }
 
 const ajax = function (api, data = null) {
@@ -48,7 +49,7 @@ const ajax = function (api, data = null) {
   console.log('method: ', method, ' | model: ', model)
 
   let params = {
-    spc: SpcMap[model.endsWith('s') ? model.substr(0, model.length - 1) : model]
+    spc: SpcMap[model.endsWith('s') ? model : `${model}s`]
   }
   if (api.endsWith('projectCode')) {
     params.api = 'GetByProject'
@@ -58,14 +59,14 @@ const ajax = function (api, data = null) {
     params.api = 'GetByMonitor'
   } else if (api.endsWith('code')) {
     params.api = 'GetByCode'
-  } else if (method === 'get' && model.endsWith('s')) {
-    params.api = 'GetALL'
   } else if (method === 'get' && ~Object.keys(SpcMap).indexOf(model)) {
+    params.api = 'GetALL'
+  } else if (method === 'get' && ~Object.keys(SpcMap).indexOf(`${model}s`)) {
     params.api = 'GetByID'
   } else if (method === 'post') {
     params.api = 'Add'
     delete data.id
-    data.create_date = new Date().toJSON()
+    // data.create_date = new Date().toJSON()
   } else if (method === 'put') {
     params.api = 'Update'
   } else if (method === 'delete') {

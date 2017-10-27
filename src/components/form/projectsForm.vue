@@ -9,12 +9,13 @@
         <el-input v-model="form.project_name"/>
       </el-form-item>
 
-      <el-form-item label="省份" prop="province">
-        <el-input v-model="form.province"/>
-      </el-form-item>
-
-      <el-form-item label="城市" prop="city">
-        <el-input v-model="form.city"/>
+      <el-form-item label="省份/城市" prop="address">
+        <el-cascader
+          :options="cities"
+          v-model="address"
+          :disabled="type === 'view'"
+          @change="cityChanged"
+        ></el-cascader>
       </el-form-item>
 
       <el-form-item label="项目负责人" prop="pm">
@@ -55,7 +56,16 @@
       var checkProjectCode = (rule, value, callback) => {
         (this.type !== 'create') ? callback() : codeValidator('project', value, callback)
       }
+      var checkAddress = (rule, value, callback) => {
+        if (this.address[1]) {
+          callback()
+        } else {
+          callback(new Error('请选择省份/城市'))
+        }
+      }
       return {
+        cities: [],
+        address: [],
         form: {
           id: '',
           project_code: '',
@@ -69,8 +79,7 @@
         rules: {
           project_code: [{ required: true, validator: checkProjectCode, trigger: 'blur' }],
           project_name: [{ required: true, message: '请输入项目名称', trigger: 'blur' }],
-          province: [{ required: true, message: '请输入省份', trigger: 'blur' }],
-          city: [{ required: true, message: '请输入城市', trigger: 'blur' }],
+          address: [{ required: true, validator: checkAddress, message: '请选择省份/城市' }],
           pm: [{ required: true, message: '请输入负责人', trigger: 'blur' }],
           phone_no: [{ required: true, message: '请输入手机号', trigger: 'blur' }]
         }
@@ -84,14 +93,36 @@
     methods: {
       reset (flag) {
         this.form.id = ''
+        this.address = []
         this.$emit('close', flag, this.type)
         this.$refs.form.resetFields()
+      },
+      cityChanged () {
+        this.form.province = this.address[0]
+        this.form.city = this.address[1]
       },
       fetchProject (id) {
         ajax('get project', id).then(res => {
           if (res.data) {
             this.form = res.data
+            this.address = [this.form.province, this.form.city]
           }
+        })
+      },
+      fetchCities () {
+        ajax('get cities').then(res => {
+          let cityMap = {}
+          res.data.map(item => {
+            if (!cityMap[item.province]) {
+              cityMap[item.province] = {
+                label: item.province,
+                value: item.province,
+                children: []
+              }
+            }
+            cityMap[item.province].children.push({ label: item.city, value: item.city })
+          })
+          this.cities = Object.values(cityMap)
         })
       },
       onSubmit () {
@@ -109,6 +140,7 @@
         })
       },
       init (projectId) {
+        this.fetchCities()
         projectId && this.fetchProject(projectId)
       }
     },

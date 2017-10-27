@@ -28,6 +28,7 @@
           accordion
           lazy
           style="margin-top: 50px"
+          ref="tree"
           @node-click="handleNodeClick">
         </el-tree>
       </el-col>
@@ -80,6 +81,9 @@
         }
       },
       deleteItem () {
+        if (!this.formId) {
+          return void this.$message({ showClose: true, type: 'info', message: '先选择一个建筑' })
+        }
         const bIndex = this.treeData.findIndex(item => item.value === this.buildingCode)
         if (this.type === 'building') {
           this.$confirm('此操作将永久删除该建筑, 是否继续?', '提示', {
@@ -114,6 +118,8 @@
         this.dialogFormVisible = false
       },
       handleNodeClick (data, node) {
+        console.log(arguments)
+        console.log(this.$refs.tree)
         this.type = data.type
         this.formId = data.id
         if (data.type === 'building') {
@@ -148,11 +154,9 @@
         })
       },
       fetchProject (projectId) {
-        if (projectId !== 'admin') {
-          ajax('get project', projectId).then(res => {
-            this.projectCode = res.data.project_code
-          })
-        }
+        ajax('get project', projectId).then(res => {
+          this.projectCode = res.data.project_code
+        })
       },
       fetchBuildings (projectCode) {
         return ajax('get buildings by projectCode', projectCode).then(res => {
@@ -180,7 +184,7 @@
       },
       init () {
         this.fetchProjects()
-        this.fetchProject(this.$route.params.projectId)
+        this.$route.params.projectId !== 'admin' && this.fetchProject(this.$route.params.projectId)
       }
     },
     mounted () {

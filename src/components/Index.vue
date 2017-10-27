@@ -11,7 +11,7 @@
     <el-table :data="tableData" border style="width: 100%">
       <el-table-column align="center" label="项目代码" prop="project_code"/>
       <el-table-column align="center" label="项目名称" prop="project_name"/>
-      <el-table-column align="center" label="项目地址" width="100">
+      <el-table-column align="center" label="项目地址">
         <template slot-scope="scope">
           <span>{{ scope.row.province }}</span>
           <span>{{ scope.row.city }}</span>
@@ -28,8 +28,8 @@
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间" prop="create_date" :formatter="fmtDate"/>
-      <el-table-column align="center" label="操作" width="400">
+      <el-table-column align="center" label="创建时间" prop="create_date" width="160" :formatter="fmtDate"/>
+      <el-table-column align="center" label="操作" width="250">
         <template slot-scope="scope">
           <el-button size="small" type="info" @click="$router.push(`/manage/${scope.row.id}/buildings`)">管理建筑</el-button>
           <el-button size="small" @click="openDialog('edit', scope.row.id)">编辑</el-button>
