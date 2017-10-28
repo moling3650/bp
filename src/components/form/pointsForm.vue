@@ -2,16 +2,6 @@
   <div class="points-form">
     <el-form ref="form" :model="form" :rules="rules" label-width="130px">
 
-      <el-form-item label="通道序号" prop="channel_idx" required>
-        <el-select v-model="form.channel_idx" placeholder="请选择通道序号" :disabled="type === 'view'">
-          <el-option
-            v-for="index in 8"
-            :key="index"
-            :value="index">
-          </el-option>
-        </el-select>
-      </el-form-item>
-
       <el-form-item  v-if="!projectCode" label="LORA/监测单元" prop="codes" required>
         <el-cascader
           :options="monitors"
@@ -21,6 +11,22 @@
         ></el-cascader>
       </el-form-item>
 
+      <el-form-item label="监测组" prop="group_name">
+        <el-col :span="9">
+          <el-input v-model="form.group_name" :disabled="type === 'view'"/>
+        </el-col>
+      </el-form-item>
+
+      <el-form-item label="通道序号" prop="channel_idx" required>
+        <el-select v-model="form.channel_idx" placeholder="请选择通道序号" :disabled="type === 'view'">
+          <el-option
+            v-for="index in 8"
+            :key="index"
+            :value="index">
+          </el-option>
+        </el-select>
+      </el-form-item>
+<!--
       <el-form-item v-if="projectCode && unitId" label="LORA名称" prop="monitor_code">
         <el-select v-model="form.monitor_code" placeholder="请选择LORA">
           <el-option
@@ -31,7 +37,7 @@
           </el-option>
         </el-select>
       </el-form-item>
-
+ -->
       <el-form-item label="信号类型" prop="signal_type" required>
         <el-select v-model="form.signal_type" placeholder="请选择信号类型" :disabled="type === 'view'">
           <el-option
@@ -44,11 +50,15 @@
       </el-form-item>
 
       <el-form-item label="上限" prop="upper_limit">
-        <el-input v-model="form.upper_limit" :disabled="type === 'view'"/>
+        <el-col :span="9">
+          <el-input v-model="form.upper_limit" :disabled="type === 'view'"/>
+        </el-col>
       </el-form-item>
 
       <el-form-item label="下限" prop="lower_limit">
-        <el-input v-model="form.lower_limit" :disabled="type === 'view'"/>
+        <el-col :span="9">
+          <el-input v-model="form.lower_limit" :disabled="type === 'view'"/>
+        </el-col>
       </el-form-item>
 
       <el-form-item label="状态" prop="state" required>
@@ -91,6 +101,7 @@
           channel_idx: 1,
           codes: [],
           monitor_code: '',
+          group_name: '',
           signal_type: 0,
           lower_limit: 0,
           upper_limit: 0,
@@ -98,7 +109,7 @@
         },
         rules: {
           monitor_code: [{ required: true, message: '请输入LORA代码', trigger: 'blur' }],
-          // lower_limit: [{ required: true, message: '请输入端口名称', trigger: 'blur' }],
+          group_name: [{ required: true, message: '请输入监测组', trigger: 'blur' }],
           // upper_limit: [{ required: true, type: 'number', message: '请输入端口', trigger: 'blur' }],
           // stop_bit: [{ required: true, type: 'number', message: '请输入停止位', trigger: 'blur' }],
           channel_count: [{ required: true, type: 'number', message: '请输入通道数量', trigger: 'blur' }]
