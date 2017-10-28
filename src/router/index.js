@@ -7,6 +7,7 @@ import Uppers from '@/components/Uppers'
 import Monitors from '@/components/Monitors'
 import Points from '@/components/Points'
 import ManageBuildings from '@/components/ManageBuildings'
+import Chart from '@/components/Chart'
 
 Vue.use(Router)
 
@@ -46,6 +47,11 @@ export default new Router({
       path: '/points',
       name: 'Points',
       component: Points
+    },
+    {
+      path: '/chart',
+      name: 'Chart',
+      component: Chart
     }
   ]
 })

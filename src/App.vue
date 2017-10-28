@@ -7,6 +7,7 @@
       <el-menu-item index="/uppers">上位机管理</el-menu-item>
       <el-menu-item index="/monitors">LORA管理</el-menu-item>
       <el-menu-item index="/points">节点管理</el-menu-item>
+      <el-menu-item index="/chart">监测图</el-menu-item>
     </el-menu>
     <router-view/>
   </div>
