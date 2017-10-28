@@ -12,7 +12,7 @@
       <el-table-column align="center" label="所属项目" prop="project_code"/>
       <el-table-column align="center" label="状态" prop="state" :formatter="fmtState"/>
       <el-table-column align="center" label="创建时间" prop="create_date" width="160" :formatter="fmtDate"/>
-      <el-table-column align="center" label="操作" width="200">
+      <el-table-column align="center" label="操作" width="250">
         <template slot-scope="scope">
           <el-button size="small" @click="openDialog('edit', scope.row.id)">编辑</el-button>
           <el-button size="small" type="danger" @click="handleDelete(scope.row.id)">删除</el-button>

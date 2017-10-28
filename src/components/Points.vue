@@ -11,11 +11,11 @@
       <el-table-column align="center" label="通道序号" prop="channel_idx" width="100"/>
       <el-table-column align="center" label="监测单元" prop="unit_id"/>
       <el-table-column align="center" label="信号类型" prop="signal_type" :formatter="fmtSignalType"/>
-      <el-table-column align="center" label="上限" prop="upper_limit"/>
-      <el-table-column align="center" label="下限" prop="lower_limit"/>
-      <el-table-column align="center" label="状态" prop="state" width="80" :formatter="fmtState"/>
+      <el-table-column align="center" label="上限" width="100" prop="upper_limit"/>
+      <el-table-column align="center" label="下限" width="100" prop="lower_limit"/>
+      <el-table-column align="center" label="状态" width="80" prop="state" :formatter="fmtState"/>
       <el-table-column align="center" label="创建时间" prop="create_date" width="160" :formatter="fmtDate"/>
-      <el-table-column align="center" label="操作" width="200">
+      <el-table-column align="center" label="操作" width="250">
         <template slot-scope="scope">
           <el-button size="small" @click="openDialog('view', scope.row.id)">查看</el-button>
           <el-button size="small" @click="openDialog('edit', scope.row.id)">编辑</el-button>

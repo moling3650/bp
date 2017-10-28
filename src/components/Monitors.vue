@@ -17,7 +17,7 @@
       <el-table-column align="center" label="奇偶校验" prop="parity_check" width="100"/>
       <el-table-column align="center" label="通道数量" prop="channel_count" width="100"/>
       <el-table-column align="center" label="创建时间" prop="create_date" width="160" :formatter="fmtDate"/>
-      <el-table-column align="center" label="操作" width="200">
+      <el-table-column align="center" label="操作" width="250">
         <template slot-scope="scope">
           <el-button size="small" @click="openDialog('view', scope.row.id)">查看</el-button>
           <el-button size="small" @click="openDialog('edit', scope.row.id)">编辑</el-button>
