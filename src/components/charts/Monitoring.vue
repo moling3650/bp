@@ -38,8 +38,7 @@
     <el-row v-for="unit in buildingUnits" :key="unit_id" :gutter="20">
       <h1 class="title">{{ unit.unit_name }}</h1>
       <el-col :span="12" v-for="group in unit.groups" :key="group" :style="{ marginBottom: '10px' }">
-        <el-card :header="group" :body-style="{ height: '200px', padding: '10px' }">
-        </el-card>
+        <el-card :header="group" :body-style="{ height: '200px', padding: '10px' }"/>
       </el-col>
     </el-row>
   </div>

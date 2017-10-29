@@ -35,14 +35,26 @@
       </el-row>
     </el-form>
 
+    <el-row v-for="unit in buildingUnits" :key="unit.unit_id" :gutter="20">
+      <h1 class="title">{{ unit.unit_name }}</h1>
+      <el-col :span="12" v-for="group in unit.groups" :key="group" :style="{ marginBottom: '10px' }">
+        <el-card :body-style="{ height: '200px', padding: '10px' }">
+          <line-chart :group="group" :unit-id="unit.unit_id" :start-time="form.dates[0]" :end-time="form.dates[1]"/>
+        </el-card>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
   import ajax from '@/apis'
+  import lineChart from '@/components/charts/lineChart'
 
   export default {
     name: 'HistoryCharts',
+    components: {
+      lineChart
+    },
     data () {
       return {
         buildings: [],
@@ -58,6 +70,9 @@
         console.log(arguments)
         ajax('get buildingUnits group by buildingCode', codes[1]).then(res => {
           this.buildingUnits = res.data
+        }).catch(err => {
+          console.log(err)
+          this.buildingUnits = [{ 'unit_id': 1, 'unit_name': '建筑整体', 'groups': ['AA'] }]
         })
       },
       onSubmit () {
@@ -77,6 +92,9 @@
             projects[item.project_code].children.push({ label: item.building_name, value: item.building_code })
           })
           this.buildings = Object.values(projects)
+        }).catch(err => {
+          console.log(err)
+          this.buildings = [{ label: '开发测试', value: 'test', children: [{ label: '开发建筑', value: 'tb' }] }]
         })
       }
     },
