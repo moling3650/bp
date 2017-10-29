@@ -7,7 +7,11 @@
       <el-menu-item index="/uppers">上位机管理</el-menu-item>
       <el-menu-item index="/monitors">LORA管理</el-menu-item>
       <el-menu-item index="/points">节点管理</el-menu-item>
-      <el-menu-item index="/chart">监测图</el-menu-item>
+      <el-submenu index="/charts">
+        <template slot="title">监测图</template>
+        <el-menu-item index="/charts/monitoring">监控中</el-menu-item>
+        <el-menu-item index="/charts/history">历史数据</el-menu-item>
+      </el-submenu>
     </el-menu>
     <router-view/>
   </div>
