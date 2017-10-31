@@ -11,6 +11,12 @@
         ></el-cascader>
       </el-form-item>
 
+      <el-form-item label="节点名称" prop="point_name">
+        <el-col :span="9">
+          <el-input v-model="form.point_name" :disabled="type === 'view'"/>
+        </el-col>
+      </el-form-item>
+
       <el-form-item label="监测组" prop="group_name">
         <el-col :span="9">
           <el-input v-model="form.group_name" :disabled="type === 'view'"/>
@@ -51,13 +57,13 @@
 
       <el-form-item label="上限" prop="upper_limit">
         <el-col :span="9">
-          <el-input v-model="form.upper_limit" :disabled="type === 'view'"/>
+          <el-input v-model.number="form.upper_limit" :disabled="type === 'view'"/>
         </el-col>
       </el-form-item>
 
       <el-form-item label="下限" prop="lower_limit">
         <el-col :span="9">
-          <el-input v-model="form.lower_limit" :disabled="type === 'view'"/>
+          <el-input v-model.number="form.lower_limit" :disabled="type === 'view'"/>
         </el-col>
       </el-form-item>
 
@@ -95,12 +101,31 @@
       }
     },
     data () {
+      const checkUpperLimit = (rule, value, callback) => {
+        if (isNaN(this.form.upper_limit)) {
+          callback(new Error('请输入合法数字'))
+        } else if (this.form.upper_limit < this.form.lower_limit) {
+          callback(new Error('上限不能低于下限'))
+        } else {
+          callback()
+        }
+      }
+      const checkLowerLimit = (rule, value, callback) => {
+        if (isNaN(this.form.lower_limit)) {
+          callback(new Error('请输入合法数字'))
+        } else if (this.form.upper_limit < this.form.lower_limit) {
+          callback(new Error('下限不能高于上限'))
+        } else {
+          callback()
+        }
+      }
       return {
         monitors: [],
         form: {
           channel_idx: 1,
           codes: [],
           monitor_code: '',
+          point_name: '',
           group_name: '',
           signal_type: 0,
           lower_limit: 0,
@@ -109,9 +134,10 @@
         },
         rules: {
           monitor_code: [{ required: true, message: '请输入LORA代码', trigger: 'blur' }],
+          point_name: [{ required: true, message: '请输入节点名称', trigger: 'blur' }],
           group_name: [{ required: true, message: '请输入监测组', trigger: 'blur' }],
-          // upper_limit: [{ required: true, type: 'number', message: '请输入端口', trigger: 'blur' }],
-          // stop_bit: [{ required: true, type: 'number', message: '请输入停止位', trigger: 'blur' }],
+          upper_limit: [{ required: true, validator: checkUpperLimit, trigger: 'blur' }],
+          lower_limit: [{ required: true, validator: checkLowerLimit, trigger: 'blur' }],
           channel_count: [{ required: true, type: 'number', message: '请输入通道数量', trigger: 'blur' }]
         }
       }

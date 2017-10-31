@@ -9,11 +9,12 @@
     <el-table :data="tableData" border style="width: 100%">
       <el-table-column align="center" label="LORA代码" prop="monitor_code"/>
       <el-table-column align="center" label="监测单元" width="100" prop="unit_id"/>
-      <el-table-column align="center" label="监测组" width="160" prop="group_name"/>
+      <el-table-column align="center" label="节点名称" width="100" prop="point_name"/>
+      <el-table-column align="center" label="监测组" width="100" prop="group_name"/>
       <el-table-column align="center" label="通道序号" width="100" prop="channel_idx"/>
       <el-table-column align="center" label="信号类型" width="100" prop="signal_type" :formatter="fmtSignalType"/>
-      <el-table-column align="center" label="上限" width="100" prop="upper_limit"/>
-      <el-table-column align="center" label="下限" width="100" prop="lower_limit"/>
+      <el-table-column align="center" label="上限" width="80" prop="upper_limit"/>
+      <el-table-column align="center" label="下限" width="80" prop="lower_limit"/>
       <el-table-column align="center" label="状态" width="80" prop="state" :formatter="fmtState"/>
       <el-table-column align="center" label="创建时间" prop="create_date" width="160" :formatter="fmtDate"/>
       <el-table-column align="center" label="操作" width="250">
