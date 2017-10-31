@@ -120,6 +120,7 @@
             if (!datas[key][item.point_id]) {
               datas[key][item.point_id] = {
                 point_id: item.point_id,
+                point_name: item.point_name,
                 data: []
               }
             }

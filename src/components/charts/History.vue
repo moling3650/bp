@@ -47,7 +47,6 @@
 </template>
 
 <script>
-  import axios from 'axios'
   import ajax from '@/apis'
   import lineChart from '@/components/charts/lineChart'
 
@@ -67,7 +66,6 @@
         showCharts: false,
         buildings: [],
         buildingUnits: [],
-        ajax: axios.create(),
         form: {
           projectBuilding: [],
           dates: []
@@ -93,7 +91,14 @@
         })
       },
       fetchPointData () {
-        this.ajax.get('/api/pointData').then(res => {
+        const params = {
+          buildingCode: this.form.projectBuilding[1],
+          startTime: this.form.dates[0],
+          endTime: this.form.dates[1]
+        }
+        console.log(params)
+        ajax('get pointDatas by buildingCode', params).then(res => {
+          console.log(res.data)
           let datas = {}
           res.data.map(item => {
             const key = `${item.unit_id}_${item.group_name}`
@@ -103,15 +108,13 @@
             if (!datas[key][item.point_id]) {
               datas[key][item.point_id] = {
                 point_id: item.point_id,
+                point_name: item.point_name,
                 data: []
               }
             }
             datas[key][item.point_id].data.push([item.input_time, item.val])
           })
-          for (const key in datas) {
-            const index = this.$refs.lineChart.findIndex(item => item.title === key)
-            ~index && this.$refs.lineChart[index].setData(datas[key])
-          }
+          this.$refs.lineChart.map(chart => chart.setData(datas[chart.title]))
         })
       },
       fetchBuildings () {
