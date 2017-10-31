@@ -38,7 +38,8 @@ const SpcMap = {
   uppers: 'XJBLL.UpperMonitorBLL',
   monitors: 'XJBLL.MonitorBLL',
   points: 'XJBLL.PointBLL',
-  cities: 'XJBLL.CityBLL'
+  cities: 'XJBLL.CityBLL',
+  pointDatas: 'XJBLL.PointDataBLL'
 }
 
 const ajax = function (api, data = null) {

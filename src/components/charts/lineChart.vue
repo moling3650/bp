@@ -48,12 +48,12 @@
             type: 'slider',
             show: true,
             handleSize: 8,
-            filterMode: 'none',
+            filterMode: 'filter',
             start
           },
           {
             type: 'inside',
-            filterMode: 'none',
+            filterMode: 'filter',
             start
           }
         ]
