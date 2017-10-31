@@ -8,23 +8,9 @@
   export default {
     name: 'lineChart',
     props: {
-      group: {
+      title: {
         type: String,
         required: true
-      },
-      unitId: {
-        type: Number,
-        required: true
-      },
-      startTime: {
-        type: Date,
-        default: new Date(Date.now() - (1000 * 3600 * 24))
-      },
-      endTime: {
-        type: Date
-      },
-      interval: {
-        type: String
       }
     },
     data () {
@@ -33,23 +19,26 @@
       }
     },
     methods: {
-      setData (data) {
+      setData (dataMap) {
         this.chart || this.init()
-        const series = data.map(item => {
+        const legend = {
+          data: Object.keys(dataMap).map(key => ({ name: key }))
+        }
+        const series = Object.values(dataMap).map(item => {
           return {
-            name: item.group_name,
+            name: item.point_id,
             type: 'line',
             hoverAnimation: false,
             data: item.data
           }
         })
-        this.chart.setOption({ series })
+        this.chart.setOption({ legend, series })
       },
       init () {
         this.chart = Echarts.init(this.$refs.lineChart)
         const option = {
           title: {
-            text: this.group
+            text: this.title
           },
           grid: {
             top: 35,

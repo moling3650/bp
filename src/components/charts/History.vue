@@ -39,7 +39,7 @@
       <h1 class="title">{{ unit.unit_name }}</h1>
       <el-col :span="12" v-for="group in unit.groups" :key="group" :style="{ marginBottom: '10px' }">
         <el-card :body-style="{ height: '200px', padding: '10px' }">
-          <line-chart :group="group" :unit-id="unit.unit_id" :start-time="form.dates[0]" :end-time="form.dates[1]"/>
+          <line-chart :title="`${unit.unit_id}_${group}`" ref="lineChart"/>
         </el-card>
       </el-col>
     </el-row>
@@ -47,6 +47,7 @@
 </template>
 
 <script>
+  import axios from 'axios'
   import ajax from '@/apis'
   import lineChart from '@/components/charts/lineChart'
 
@@ -59,6 +60,7 @@
       return {
         buildings: [],
         buildingUnits: [],
+        ajax: axios.create(),
         form: {
           projectBuilding: [],
           dates: []
@@ -67,16 +69,49 @@
     },
     methods: {
       selectBuilding (codes) {
-        console.log(arguments)
         ajax('get buildingUnits group by buildingCode', codes[1]).then(res => {
           this.buildingUnits = res.data
-        }).catch(err => {
+        })
+        .catch(err => {
           console.log(err)
-          this.buildingUnits = [{ 'unit_id': 1, 'unit_name': '建筑整体', 'groups': ['AA'] }]
+          this.buildingUnits = [
+            { 'unit_id': 1, 'unit_name': '建筑整体', 'groups': ['AA', 'BB'] },
+            { 'unit_id': 2, 'unit_name': '地基', 'groups': ['AA'] }
+          ]
         })
       },
       onSubmit () {
-
+        // const params = {
+        //   buildingCode: this.form.projectBuilding[1],
+        //   startTime: this.form.dates[0],
+        //   endTime: this.form.dates[1]
+        // }
+        // ajax('get pointData by building and date', params).then(res => {
+        //   console.log(res.data)
+        // })
+        this.fetchPointData()
+      },
+      fetchPointData () {
+        this.ajax.get('/api/pointData').then(res => {
+          let datas = {}
+          res.data.map(item => {
+            const key = `${item.unit_id}_${item.group_name}`
+            if (!datas[key]) {
+              datas[key] = {}
+            }
+            if (!datas[key][item.point_id]) {
+              datas[key][item.point_id] = {
+                point_id: item.point_id,
+                data: []
+              }
+            }
+            datas[key][item.point_id].data.push([item.input_time, item.val])
+          })
+          for (const key in datas) {
+            const index = this.$refs.lineChart.findIndex(item => item.title === key)
+            ~index && this.$refs.lineChart[index].setData(datas[key])
+          }
+        })
       },
       fetchBuildings () {
         ajax('get buildings').then(res => {
@@ -92,7 +127,8 @@
             projects[item.project_code].children.push({ label: item.building_name, value: item.building_code })
           })
           this.buildings = Object.values(projects)
-        }).catch(err => {
+        })
+        .catch(err => {
           console.log(err)
           this.buildings = [{ label: '开发测试', value: 'test', children: [{ label: '开发建筑', value: 'tb' }] }]
         })

@@ -26,6 +26,58 @@ const apis = ['projects', 'buildings', 'uppers', 'buildingunits', 'monitors', 'p
 
 apis.map(api => app.use(`/api/${api}`, require(`../apis/${api}.js`)))
 
+const datas = []
+let i = 0
+setInterval(_ => {
+  if (i % 3 === 0) {
+    datas.push({
+      building_code: 'B001',
+      unit_id: 1,
+      point_id: 1,
+      val: Math.random() * 3,
+      input_time: new Date().toJSON(),
+      group_name: 'AA'
+    })
+
+    datas.push({
+      building_code: 'B001',
+      unit_id: 2,
+      point_id: 2,
+      val: Math.random() * 3,
+      input_time: new Date().toJSON(),
+      group_name: 'AA'
+    })
+  }
+
+  if (i % 5 === 0) {
+    datas.push({
+      building_code: 'B001',
+      unit_id: 2,
+      point_id: 3,
+      val: Math.random() + 1,
+      input_time: new Date().toJSON(),
+      group_name: 'AA'
+    })
+  }
+
+  if (i % 2 === 0) {
+    datas.push({
+      building_code: 'B001',
+      unit_id: 1,
+      point_id: 4,
+      val: Math.random() + 2,
+      input_time: new Date().toJSON(),
+      group_name: 'BB'
+    })
+  }
+
+  i++
+}, 1000)
+
+app.get('/api/pointData', function (req, res) {
+  res.json(datas)
+})
+
 const compiler = webpack(webpackConfig)
 
 const devMiddleware = require('webpack-dev-middleware')(compiler, {
