@@ -125,10 +125,11 @@
             }
             datas[key][item.point_id].data.push([item.input_time, item.val])
           })
-          for (const key in datas) {
-            const index = this.$refs.lineChart.findIndex(item => item.title === key)
-            ~index && this.$refs.lineChart[index].setData(datas[key])
-          }
+          // for (const key in datas) {
+          //   const index = this.$refs.lineChart.findIndex(item => item.title === key)
+          //   ~index && this.$refs.lineChart[index].setData(datas[key])
+          // }
+          this.$refs.lineChart.map(chart => chart.setData(datas[chart.title]))
           this.interval && (this.timer = setTimeout(this.fetchPointData, this.interval))
         })
       },

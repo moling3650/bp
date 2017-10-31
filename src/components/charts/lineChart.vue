@@ -19,30 +19,38 @@
     },
     data () {
       return {
-        chart: null
+        chart: null,
+        isInitDataZoom: false
       }
     },
     methods: {
       setData (dataMap) {
+        if (!dataMap) {
+          return this.chart.showLoading({ text: '没有数据...' })
+        }
         this.chart || this.init()
-        const dataZoom = this.getDataZoom(dataMap, this.size)
         const legend = {
-          data: Object.keys(dataMap).map(key => ({ name: key }))
+          data: Object.values(dataMap).map(item => item.point_name)
         }
         const series = Object.values(dataMap).map(item => {
           return {
-            name: item.point_id,
+            name: item.point_name,
             type: 'line',
             hoverAnimation: false,
             data: item.data
           }
         })
-        this.chart.setOption({ dataZoom, legend, series })
+        const option = { legend, series }
+        if (!this.isInitDataZoom) {
+          option.dataZoom = this.getDataZoom(dataMap, 50)
+          this.isInitDataZoom = true
+        }
+        this.chart.setOption(option)
         this.chart.hideLoading()
       },
       getDataZoom (dataMap, size) {
         const maxCount = Math.max(...Object.values(dataMap).map(item => item.data.length))
-        const start = maxCount <= size ? maxCount : (100 - Math.floor((100 / (maxCount / size))))
+        const start = maxCount <= size ? 0 : (100 - Math.floor((100 / (maxCount / size))))
         return [
           {
             type: 'slider',
@@ -92,9 +100,6 @@
           series: []
         }
         this.chart.setOption(option)
-        this.chart.showLoading({
-          text: '查询数据中...'
-        })
       }
     },
     mounted () {
