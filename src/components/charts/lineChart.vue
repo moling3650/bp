@@ -11,6 +11,10 @@
       title: {
         type: String,
         required: true
+      },
+      size: {
+        type: Number,
+        default: 50
       }
     },
     data () {
@@ -21,6 +25,7 @@
     methods: {
       setData (dataMap) {
         this.chart || this.init()
+        const dataZoom = this.getDataZoom(dataMap, this.size)
         const legend = {
           data: Object.keys(dataMap).map(key => ({ name: key }))
         }
@@ -32,7 +37,26 @@
             data: item.data
           }
         })
-        this.chart.setOption({ legend, series })
+        this.chart.setOption({ dataZoom, legend, series })
+        this.chart.hideLoading()
+      },
+      getDataZoom (dataMap, size) {
+        const maxCount = Math.max(...Object.values(dataMap).map(item => item.data.length))
+        const start = maxCount <= size ? maxCount : (100 - Math.floor((100 / (maxCount / size))))
+        return [
+          {
+            type: 'slider',
+            show: true,
+            handleSize: 8,
+            filterMode: 'none',
+            start
+          },
+          {
+            type: 'inside',
+            filterMode: 'none',
+            start
+          }
+        ]
       },
       init () {
         this.chart = Echarts.init(this.$refs.lineChart)
@@ -43,7 +67,7 @@
           grid: {
             top: 35,
             right: 30,
-            bottom: 35,
+            bottom: 80,
             left: 30
           },
           tooltip: {
@@ -68,6 +92,9 @@
           series: []
         }
         this.chart.setOption(option)
+        this.chart.showLoading({
+          text: '查询数据中...'
+        })
       }
     },
     mounted () {
