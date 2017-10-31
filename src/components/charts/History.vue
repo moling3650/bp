@@ -3,10 +3,10 @@
 
     <h1 class="title">历史数据查询</h1>
 
-    <el-form :inline="true" :model="form">
+    <el-form :inline="true" :model="form" :rules="rules" ref="form">
       <el-row :gutter="5">
         <el-col :span="7" :offset="4">
-          <el-form-item label="选择项目/建筑： ">
+          <el-form-item label="选择项目/建筑： " prop="building">
             <el-cascader
               :options="buildings"
               v-model="form.projectBuilding"
@@ -16,7 +16,7 @@
         </el-col>
 
         <el-col :span="6">
-          <el-form-item label="选择日期： ">
+          <el-form-item label="选择日期： " prop="date">
             <el-date-picker
               v-model="form.dates"
               type="daterange"
@@ -35,10 +35,10 @@
       </el-row>
     </el-form>
 
-    <el-row v-for="unit in buildingUnits" :key="unit.unit_id" :gutter="20">
+    <el-row v-if="showCharts" v-for="unit in buildingUnits" :key="unit.unit_id" :gutter="20">
       <h1 class="title">{{ unit.unit_name }}</h1>
       <el-col :span="12" v-for="group in unit.groups" :key="group" :style="{ marginBottom: '10px' }">
-        <el-card :body-style="{ height: '200px', padding: '10px' }">
+        <el-card :body-style="{ height: '250px', padding: '10px' }">
           <line-chart :title="`${unit.unit_id}_${group}`" ref="lineChart"/>
         </el-card>
       </el-col>
@@ -57,39 +57,40 @@
       lineChart
     },
     data () {
+      const checkBuilding = (rule, value, callback) => {
+        (this.form.projectBuilding[1]) ? callback() : callback(new Error('请选择建筑'))
+      }
+      const checkDate = (rule, value, callback) => {
+        (this.form.dates[1]) ? callback() : callback(new Error('请选择日期'))
+      }
       return {
+        showCharts: false,
         buildings: [],
         buildingUnits: [],
         ajax: axios.create(),
         form: {
           projectBuilding: [],
           dates: []
+        },
+        rules: {
+          building: [{ required: true, validator: checkBuilding, message: '请选择建筑' }],
+          date: [{ required: true, validator: checkDate, message: '请选择日期' }]
         }
       }
     },
     methods: {
       selectBuilding (codes) {
-        ajax('get buildingUnits group by buildingCode', codes[1]).then(res => {
-          this.buildingUnits = res.data
-        })
-        .catch(err => {
-          console.log(err)
-          this.buildingUnits = [
-            { 'unit_id': 1, 'unit_name': '建筑整体', 'groups': ['AA', 'BB'] },
-            { 'unit_id': 2, 'unit_name': '地基', 'groups': ['AA'] }
-          ]
-        })
+        this.fetchBuildingUnits(codes[1])
       },
       onSubmit () {
-        // const params = {
-        //   buildingCode: this.form.projectBuilding[1],
-        //   startTime: this.form.dates[0],
-        //   endTime: this.form.dates[1]
-        // }
-        // ajax('get pointData by building and date', params).then(res => {
-        //   console.log(res.data)
-        // })
-        this.fetchPointData()
+        this.$refs.form.validate((valid) => {
+          if (valid) {
+            this.fetchPointData()
+            this.showCharts = true
+          } else {
+            return void console.log('error submit!!')
+          }
+        })
       },
       fetchPointData () {
         this.ajax.get('/api/pointData').then(res => {
@@ -131,6 +132,18 @@
         .catch(err => {
           console.log(err)
           this.buildings = [{ label: '开发测试', value: 'test', children: [{ label: '开发建筑', value: 'tb' }] }]
+        })
+      },
+      fetchBuildingUnits (buildingCode) {
+        ajax('get buildingUnits group by buildingCode', buildingCode).then(res => {
+          this.buildingUnits = res.data
+        })
+        .catch(err => {
+          console.log(err)
+          this.buildingUnits = [
+            { 'unit_id': 1, 'unit_name': '建筑整体', 'groups': ['AA', 'BB'] },
+            { 'unit_id': 2, 'unit_name': '地基', 'groups': ['AA'] }
+          ]
         })
       }
     },
