@@ -5,7 +5,7 @@
 
     <el-form :inline="true" :model="form" :rules="rules" ref="form">
       <el-row :gutter="5">
-        <el-col :span="7" :offset="4">
+        <el-col :span="7" :offset="3">
           <el-form-item label="选择项目/建筑： " prop="building">
             <el-cascader
               :options="buildings"
@@ -15,11 +15,11 @@
           </el-form-item>
         </el-col>
 
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="选择日期： " prop="date">
             <el-date-picker
               v-model="form.dates"
-              type="daterange"
+              type="datetimerange"
               range-separator=" 至 "
               start-placeholder="开始日期"
               end-placeholder="结束日期">
@@ -48,6 +48,7 @@
 
 <script>
   import ajax from '@/apis'
+  import getLocaleDateJSON from '@/apis/date'
   import lineChart from '@/components/charts/lineChart'
 
   export default {
@@ -93,8 +94,8 @@
       fetchPointData () {
         const params = {
           buildingCode: this.form.projectBuilding[1],
-          startTime: this.form.dates[0],
-          endTime: this.form.dates[1]
+          startTime: getLocaleDateJSON(this.form.dates[0]),
+          endTime: getLocaleDateJSON(this.form.dates[1])
         }
         console.log(params)
         ajax('get pointDatas by buildingCode', params).then(res => {

@@ -55,6 +55,7 @@
 
 <script>
   import ajax from '@/apis'
+  import getLocaleDateJSON from '@/apis/date'
   import lineChart from '@/components/charts/lineChart'
 
   export default {
@@ -106,8 +107,8 @@
         clearTimeout(this.timer)
         const params = {
           buildingCode: this.form.projectBuilding[1],
-          startTime: new Date(Date.now() + 8 * 3600 * 1000 - this.form.sampleSize),
-          endTime: new Date(Date.now() + 8 * 3600 * 1000)
+          startTime: getLocaleDateJSON(Date.now() - this.form.sampleSize),
+          endTime: getLocaleDateJSON()
         }
         ajax('get pointDatas by buildingCode', params).then(res => {
           console.log(res.data)
@@ -126,10 +127,6 @@
             }
             datas[key][item.point_id].data.push([item.input_time, item.val])
           })
-          // for (const key in datas) {
-          //   const index = this.$refs.lineChart.findIndex(item => item.title === key)
-          //   ~index && this.$refs.lineChart[index].setData(datas[key])
-          // }
           this.$refs.lineChart.map(chart => chart.setData(datas[chart.title]))
           this.interval && (this.timer = setTimeout(this.fetchPointData, this.interval))
         })
