@@ -110,19 +110,8 @@
         })
       },
       fetchCities () {
-        ajax('get cities').then(res => {
-          let cityMap = {}
-          res.data.map(item => {
-            if (!cityMap[item.province]) {
-              cityMap[item.province] = {
-                label: item.province,
-                value: item.province,
-                children: []
-              }
-            }
-            cityMap[item.province].children.push({ label: item.city, value: item.city })
-          })
-          this.cities = Object.values(cityMap)
+        ajax('get cities by tree').then(res => {
+          this.cities = res.data
         })
       },
       onSubmit () {

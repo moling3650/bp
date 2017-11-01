@@ -56,6 +56,8 @@ const ajax = function (api, data = null) {
 
   if (api === 'get buildingUnits group by buildingCode') {
     params.api = 'GetUnitGroup'
+  } else if (api.endsWith('tree')) {
+    params.api = 'GetTree'
   } else if (api.endsWith('projectCode')) {
     params.api = 'GetByProject'
   } else if (api.endsWith('buildingCode')) {
