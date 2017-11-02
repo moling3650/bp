@@ -42,14 +42,12 @@
       </el-row>
     </el-form>
 
-    <el-row v-if="showCharts" v-for="unit in buildingUnits" :key="unit.unit_id" :gutter="20">
-      <h1 class="title">{{ unit.unit_name }}</h1>
-      <el-col :span="12" v-for="group in unit.groups" :key="group" :style="{ marginBottom: '10px' }">
-        <el-card :body-style="{ height: '250px', padding: '10px' }">
-          <line-chart :title="`${unit.unit_id}_${group}`" ref="lineChart"/>
-        </el-card>
-      </el-col>
-    </el-row>
+    <el-card v-if="showCharts" v-for="unit in buildingUnits" :key="unit.unit_id"
+      :header="unit.unit_name" :body-style="{ padding: '10px' }" :style="{ margin: '20px' }">
+      <div v-for="group in unit.groups" :key="group" class="chart-wrap">
+        <line-chart :title="`${unit.unit_id}_${group}`" ref="lineChart"/>
+      </div>
+    </el-card>
   </div>
 </template>
 

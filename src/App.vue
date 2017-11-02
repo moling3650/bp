@@ -36,4 +36,11 @@
     margin-bottom: 10px;
     text-align: right;
   }
+
+  .chart-wrap {
+    height: 250px;
+    margin: 10px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+  }
 </style>
