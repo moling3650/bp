@@ -75,9 +75,9 @@
         const action = (type === 'create') ? '新建' : '编辑'
         if (flag) {
           this.fetchTableData()
-          this.$message({ type: 'success', message: `${action}成功` })
+          this.$message({ showClose: true, type: 'success', message: `${action}成功` })
         } else {
-          this.$message({ type: 'info', message: `已取消${action}` })
+          this.$message({ showClose: true, type: 'info', message: `已取消${action}` })
         }
         this.projectId = ''
         this.dialogFormVisible = false
@@ -93,9 +93,9 @@
         }).then(() => ajax('delete project', id)
         ).then(res => {
           this.fetchTableData()
-          this.$message({ type: 'success', message: '删除成功' })
+          this.$message({ showClose: true, type: 'success', message: '删除成功' })
         }).catch(() => {
-          this.$message({ type: 'info', message: '已取消删除' })
+          this.$message({ showClose: true, type: 'info', message: '已取消删除' })
         })
       },
       fetchTableData () {

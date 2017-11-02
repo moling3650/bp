@@ -77,7 +77,7 @@
         if (this.projectCode) {
           this.dialogFormVisible = true
         } else {
-          this.$message({ type: 'info', message: '先选择一个项目' })
+          this.$message({ showClose: true, type: 'info', message: '先选择一个项目' })
         }
       },
       deleteItem () {
@@ -106,14 +106,14 @@
       },
       closeForm (flag, type, label) {
         if (flag) {
-          this.$message({ type: 'success', message: '编辑成功' })
+          this.$message({ showClose: true, type: 'success', message: '编辑成功' })
           if (type === 'create') {
             this.projectChange(this.projectCode)
           } else if (type === 'edit') {
             this.node.data.label = label
           }
         } else {
-          this.$message({ type: 'info', message: '已取消编辑' })
+          this.$message({ showClose: true, type: 'info', message: '已取消编辑' })
         }
         this.dialogFormVisible = false
       },
