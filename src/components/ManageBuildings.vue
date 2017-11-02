@@ -81,7 +81,7 @@
         }
       },
       deleteItem () {
-        if (this.type !== 'building' && !this.formId) {
+        if (this.type !== 'building' || !this.formId) {
           return void this.$message({ showClose: true, type: 'info', message: '先选择一个建筑' })
         }
         const bIndex = this.treeData.findIndex(item => item.value === this.buildingCode)
@@ -118,8 +118,6 @@
         this.dialogFormVisible = false
       },
       handleNodeClick (data, node) {
-        console.log(arguments)
-        console.log(this.$refs.tree)
         this.type = data.type
         this.formId = data.id
         if (data.type === 'building') {
