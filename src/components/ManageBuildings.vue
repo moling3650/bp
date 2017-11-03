@@ -23,10 +23,8 @@
 
         <el-tree
           :data="treeData"
-          :load="loadNode"
           highlight-current
           accordion
-          lazy
           style="margin-top: 50px"
           ref="tree"
           @node-click="handleNodeClick">
@@ -137,7 +135,7 @@
       },
       projectChange (projectCode) {
         this.projectCode = projectCode
-        this.fetchBuildings(projectCode).then(data => {
+        this.fetchBuildingUnitsTree(projectCode).then(data => {
           this.treeData = data
         })
       },
@@ -179,6 +177,9 @@
             }
           })
         })
+      },
+      fetchBuildingUnitsTree (projectCode) {
+        return ajax('get buildingUnit tree', projectCode).then(res => res.data)
       },
       init () {
         this.fetchProjects()
