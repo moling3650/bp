@@ -36,7 +36,7 @@
 
         <el-col :span="3">
           <el-form-item>
-            <el-button type="primary" @click="onSubmit">监控数据</el-button>
+            <el-button type="primary" @click="onSubmit">{{ isMonitoring ? '停止监控' : '开始监控' }}</el-button>
           </el-form-item>
         </el-col>
       </el-row>
@@ -70,6 +70,7 @@
         value === '' || /^\d+$/.test(value) ? callback() : callback(new Error('请输入整数'))
       }
       return {
+        isMonitoring: false,
         showCharts: false,
         buildings: [],
         buildingUnits: [],
@@ -91,6 +92,7 @@
         this.fetchBuildingUnits(codes[1])
       },
       onSubmit () {
+        this.isMonitoring = !!this.form.interval && !this.isMonitoring
         this.$refs.form.validate((valid) => {
           if (valid) {
             this.fetchPointData()
@@ -126,7 +128,7 @@
             datas[key][item.point_id].data.push([item.input_time, item.val])
           })
           this.$refs.lineChart.map(chart => chart.setData(datas[chart.title]))
-          this.interval && (this.timer = setTimeout(this.fetchPointData, this.interval))
+          this.isMonitoring && (this.timer = setTimeout(this.fetchPointData, this.interval))
         })
       },
       fetchBuildings () {
