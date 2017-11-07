@@ -7,15 +7,24 @@
     </p>
 
     <el-table :data="tableData" border style="width: 100%">
-      <el-table-column align="center" label="LORA代码" prop="monitor_code"/>
-      <el-table-column align="center" label="监测单元" width="100" prop="unit_id"/>
-      <el-table-column align="center" label="节点名称" width="100" prop="point_name"/>
-      <el-table-column align="center" label="监测组" width="100" prop="group_name"/>
-      <el-table-column align="center" label="通道序号" width="100" prop="channel_idx"/>
-      <el-table-column align="center" label="信号类型" width="100" prop="signal_type" :formatter="fmtSignalType"/>
-      <el-table-column align="center" label="上限" width="80" prop="upper_limit"/>
-      <el-table-column align="center" label="下限" width="80" prop="lower_limit"/>
-      <el-table-column align="center" label="状态" width="80" prop="state" :formatter="fmtState"/>
+      <el-table-column align="center" label="LORA" prop="monitor_name"/>
+      <el-table-column align="center" label="监测单元" prop="unit_name"/>
+      <el-table-column align="center" label="监测组" prop="group_name"/>
+      <el-table-column align="center" label="节点">
+        <template slot-scope="scope">
+          <el-popover trigger="hover" placement="top">
+            <p class="popover-detail">节点名称: {{ scope.row.point_name }}</p>
+            <p class="popover-detail">通道序号: {{ scope.row.channel_idx }}</p>
+            <p class="popover-detail">信号类型: {{ fmtSignalType(scope.row.signal_type) }}</p>
+            <p class="popover-detail">上限: {{ scope.row.upper_limit }}</p>
+            <p class="popover-detail">下限: {{ scope.row.lower_limit }}</p>
+            <p class="popover-detail">状态: {{ fmtState(scope.row.state) }}</p>
+            <div slot="reference" class="name-wrapper">
+              <el-tag>{{ scope.row.point_name }}</el-tag>
+            </div>
+          </el-popover>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="创建时间" prop="create_date" width="160" :formatter="fmtDate"/>
       <el-table-column align="center" label="操作" width="250">
         <template slot-scope="scope">
@@ -70,10 +79,10 @@
         this.monitorId = ''
         this.dialogFormVisible = false
       },
-      fmtSignalType (row, column, signalType) {
+      fmtSignalType (signalType) {
         return ['正弦', '热敏', '0~5V', '4~20MA'][signalType]
       },
-      fmtState (row, column, state) {
+      fmtState (state) {
         return ['关', '开'][state]
       },
       fmtDate (row, column, dateStr) {
@@ -105,4 +114,8 @@
 </script>
 
 <style lang="css" scoped>
+  .popover-detail {
+    font-size: 16px;
+    line-height: 1.5;
+  }
 </style>

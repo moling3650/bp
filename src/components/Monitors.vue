@@ -7,11 +7,10 @@
     </p>
 
     <el-table :data="tableData" border style="width: 100%">
-      <el-table-column align="center" label="LORA代码" prop="monitor_code"/>
       <el-table-column align="center" label="LORA名称" prop="monitor_name"/>
-      <el-table-column align="center" label="所属项目" prop="project_code"/>
-      <el-table-column align="center" label="所属上位机" prop="upper_code"/>
-      <el-table-column align="center" label="端口名称" prop="port_name"/>
+      <el-table-column align="center" label="所属项目" prop="project_name"/>
+      <el-table-column align="center" label="所属上位机" prop="upper_name"/>
+      <el-table-column align="center" label="端口名称" prop="port_name" width="100"/>
       <el-table-column align="center" label="端口" prop="baud_rate" width="80"/>
       <el-table-column align="center" label="停止位" prop="stop_bit" width="80"/>
       <el-table-column align="center" label="奇偶校验" prop="parity_check" width="100"/>

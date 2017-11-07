@@ -23,8 +23,10 @@
 
         <el-tree
           :data="treeData"
+          :load="loadNode"
           highlight-current
           accordion
+          lazy
           style="margin-top: 50px"
           ref="tree"
           @node-click="handleNodeClick">
@@ -118,6 +120,7 @@
       handleNodeClick (data, node) {
         this.type = data.type
         this.formId = data.id
+        console.log(data)
         if (data.type === 'building') {
           this.buildingCode = data.value
         } else if (data.type === 'buildingUnit') {
@@ -135,7 +138,7 @@
       },
       projectChange (projectCode) {
         this.projectCode = projectCode
-        this.fetchBuildingUnitsTree(projectCode).then(data => {
+        this.fetchBuildings(projectCode).then(data => {
           this.treeData = data
         })
       },

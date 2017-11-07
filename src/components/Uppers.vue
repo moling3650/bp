@@ -7,9 +7,8 @@
     </p>
 
     <el-table :data="tableData" border style="width: 100%">
-      <el-table-column align="center" label="上位机代码" prop="upper_code"/>
       <el-table-column align="center" label="上位机名称" prop="upper_name"/>
-      <el-table-column align="center" label="所属项目" prop="project_code"/>
+      <el-table-column align="center" label="所属项目" prop="project_name"/>
       <el-table-column align="center" label="状态" prop="state" :formatter="fmtState"/>
       <el-table-column align="center" label="创建时间" prop="create_date" width="160" :formatter="fmtDate"/>
       <el-table-column align="center" label="操作" width="250">

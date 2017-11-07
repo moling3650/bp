@@ -8,8 +8,8 @@ const path = require('path')
 module.exports = {
   build: {
     env: require('./prod.env'),
-    index: path.resolve('W:/XJ-DIS_1.2/XJIF/index.html'),
-    assetsRoot: path.resolve('W:/XJ-DIS_1.2/XJIF/'),
+    index: path.resolve('W:/XJ-DIS_1.3/XJIF/index.html'),
+    assetsRoot: path.resolve('W:/XJ-DIS_1.3/XJIF/'),
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     productionSourceMap: true,

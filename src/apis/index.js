@@ -67,7 +67,7 @@ const ajax = function (api, data = null) {
   } else if (api.endsWith('code')) {
     params.api = 'GetByCode'
   } else if (method === 'get' && ~Object.keys(SpcMap).indexOf(model)) {
-    params.api = 'GetALL'
+    params.api = 'GetAllItems'
   } else if (method === 'get' && ~Object.keys(SpcMap).indexOf(`${model}s`)) {
     params.api = 'GetByID'
   } else if (method === 'post') {

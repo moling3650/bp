@@ -9,7 +9,6 @@
     </div>
 
     <el-table :data="tableData" border style="width: 100%">
-      <el-table-column align="center" label="项目代码" prop="project_code"/>
       <el-table-column align="center" label="项目名称" prop="project_name"/>
       <el-table-column align="center" label="项目地址">
         <template slot-scope="scope">
