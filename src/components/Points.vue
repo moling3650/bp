@@ -2,15 +2,15 @@
   <div class="points">
     <h1 class="title">所有节点</h1>
     <p class="btn-add">
-      <el-button type="success" icon="plus"
-        @click="openDialog('create', '')">添加节点</el-button>
+      <el-cascader :options="buildings" placeholder="请先选择建筑" @change="buildingChange"/>
+      <el-button type="success" icon="plus" @click="openDialog('create', '')">添加节点</el-button>
     </p>
 
     <el-table :data="tableData" border style="width: 100%">
-      <el-table-column align="center" label="LORA" prop="monitor_name"/>
-      <el-table-column align="center" label="监测单元" prop="unit_name"/>
+      <el-table-column align="center" label="所属LORA" prop="monitor_name"/>
+      <el-table-column align="center" label="所属建筑单元" prop="unit_name"/>
       <el-table-column align="center" label="监测组" prop="group_name"/>
-      <el-table-column align="center" label="节点">
+      <el-table-column align="center" label="节点信息">
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
             <p class="popover-detail">节点名称: {{ scope.row.point_name }}</p>
@@ -52,6 +52,8 @@
         dialogFormVisible: false,
         dialogFormType: 'create',
         monitorId: '',
+        buildings: [],
+        buildingCode: '',
         tableData: []
       }
     },
@@ -71,7 +73,7 @@
       closeDialog (flag, type) {
         const action = (type === 'create') ? '新建' : '编辑'
         if (flag) {
-          this.fetchTableData()
+          this.fetchTableData(this.buildingCode)
           this.$message({ showClose: true, type: 'success', message: `${action}成功` })
         } else {
           this.$message({ showClose: true, type: 'info', message: `已取消${action}` })
@@ -88,6 +90,10 @@
       fmtDate (row, column, dateStr) {
         return dateStr ? dateStr.replace(/(\d{4}-\d{2}-\d{2}).*?(\d{2}:\d{2}).*/, '$1 $2') : ''
       },
+      buildingChange (codes) {
+        this.buildingCode = codes[1]
+        this.fetchTableData(this.buildingCode)
+      },
       handleDelete (id) {
         this.$confirm('此操作将永久删除该节点, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -95,20 +101,28 @@
           type: 'warning'
         }).then(() => ajax('delete point', id)
         ).then(res => {
-          this.fetchTableData()
+          this.fetchTableData(this.buildingCode)
           this.$message({ showClose: true, type: 'success', message: '删除成功!' })
         }).catch(() => {
           this.$message({ showClose: true, type: 'info', message: '已取消删除' })
         })
       },
-      fetchTableData () {
-        ajax('get points').then(res => {
+      fetchBuildings () {
+        ajax('get buildings by tree').then(res => {
+          this.buildings = res.data
+        })
+      },
+      fetchTableData (buildingCode) {
+        ajax('get points by buildingCode', buildingCode).then(res => {
           this.tableData = res.data
         })
+      },
+      init () {
+        this.fetchBuildings()
       }
     },
     mounted () {
-      this.fetchTableData()
+      this.init()
     }
   }
 </script>
