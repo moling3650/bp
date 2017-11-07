@@ -24,7 +24,7 @@
       }
     },
     methods: {
-      setData (dataMap) {
+      setData (dataMap, isMonitoring) {
         if (!dataMap) {
           return this.chart.showLoading({ text: '没有数据...' })
         }
@@ -44,6 +44,9 @@
         if (!this.isInitDataZoom) {
           option.dataZoom = this.getDataZoom(dataMap, 50)
           this.isInitDataZoom = true
+        }
+        if (!isMonitoring) {
+          this.isInitDataZoom = false
         }
         this.chart.setOption(option)
         this.chart.hideLoading()

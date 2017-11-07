@@ -66,7 +66,6 @@
         (this.form.projectBuilding[1]) ? callback() : callback(new Error('请选择建筑'))
       }
       const checkInteval = (rule, value, callback) => {
-        console.log(value)
         value === '' || /^\d+$/.test(value) ? callback() : callback(new Error('请输入整数'))
       }
       return {
@@ -92,7 +91,7 @@
         this.fetchBuildingUnits(codes[1])
       },
       onSubmit () {
-        this.isMonitoring = !!this.form.interval && !this.isMonitoring
+        this.isMonitoring = !!parseInt(this.form.interval) && !this.isMonitoring
         this.$refs.form.validate((valid) => {
           if (valid) {
             this.fetchPointData()
@@ -111,7 +110,6 @@
           endTime: getLocaleDateJSON()
         }
         ajax('get pointDatas by buildingCode', params).then(res => {
-          console.log(res.data)
           let datas = {}
           res.data.map(item => {
             const key = `${item.unit_id}_${item.group_name}`
@@ -127,7 +125,7 @@
             }
             datas[key][item.point_id].data.push([item.input_time, item.val])
           })
-          this.$refs.lineChart.map(chart => chart.setData(datas[chart.title]))
+          this.$refs.lineChart.map(chart => chart.setData(datas[chart.title], this.isMonitoring))
           this.isMonitoring && (this.timer = setTimeout(this.fetchPointData, this.interval))
         })
       },
