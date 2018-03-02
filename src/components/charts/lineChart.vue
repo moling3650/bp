@@ -107,7 +107,12 @@
           },
           yAxis: {
             type: 'value',
-            boundaryGap: [0, '100%'],
+            min (value) {
+              return value.min - 50
+            },
+            max (value) {
+              return value.max + 50
+            },
             splitLine: {
               show: false
             }
