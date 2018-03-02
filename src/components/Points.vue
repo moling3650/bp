@@ -13,6 +13,7 @@
       <el-table-column align="center" label="节点信息">
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
+            <p class="popover-detail">节点ID: {{ scope.row.id }}</p>
             <p class="popover-detail">节点名称: {{ scope.row.point_name }}</p>
             <p class="popover-detail">通道序号: {{ scope.row.channel_idx }}</p>
             <p class="popover-detail">信号类型: {{ fmtSignalType(scope.row.signal_type) }}</p>
@@ -20,7 +21,7 @@
             <p class="popover-detail">下限: {{ scope.row.lower_limit }}</p>
             <p class="popover-detail">状态: {{ fmtState(scope.row.state) }}</p>
             <div slot="reference" class="name-wrapper">
-              <el-tag>{{ scope.row.point_name }}</el-tag>
+              <el-tag>{{ `${scope.row.id}: ${scope.row.point_name}` }}</el-tag>
             </div>
           </el-popover>
         </template>
