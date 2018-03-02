@@ -108,10 +108,10 @@
           yAxis: {
             type: 'value',
             min (value) {
-              return value.min - 50
+              return value.min - (value.max - value.min) / 4
             },
             max (value) {
-              return value.max + 50
+              return value.max + (value.max - value.min) / 4
             },
             splitLine: {
               show: false
