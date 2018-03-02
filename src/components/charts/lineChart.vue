@@ -79,7 +79,7 @@
             top: 35,
             right: 30,
             bottom: 80,
-            left: 30
+            left: 50
           },
           tooltip: {
             trigger: 'axis',
